@@ -1,8 +1,8 @@
 import { contextBridge } from "electron";
-import helloWorld from "./helloWorld";
+import defaultTheme from "../shared/defaultTheme";
 
 const api = {
-  helloWorld,
+  theme: defaultTheme,
 };
 
 contextBridge.exposeInMainWorld("api", api);
