@@ -1,5 +1,5 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
-  "include": ["src/main/", "src/preload", "src/renderer"],
+  "include": ["src/main/", "src/preload", "src/renderer", "src/shared"],
   "exclude": ["node_modules/"]
 }
