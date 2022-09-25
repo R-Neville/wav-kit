@@ -1,8 +1,12 @@
 import { contextBridge } from "electron";
-import defaultTheme from "../shared/defaultTheme";
+import * as file from "./file";
+import * as fsObserver from "./fsObserver";
+import * as dialog from "./dialog";
 
 const api = {
-  theme: defaultTheme,
+  file,
+  fsObserver,
+  dialog,
 };
 
 contextBridge.exposeInMainWorld("api", api);

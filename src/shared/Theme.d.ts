@@ -6,4 +6,5 @@ export default interface Theme {
   fgPrimary: string;
   fgSecondary: string;
   fgAccent: string;
+  fgHighlight: string;
 }

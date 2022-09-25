@@ -8,6 +8,7 @@ const defaultTheme = {
   fgPrimary: "#EAECEE",
   fgSecondary: "#17202A",
   fgAccent: "#EAECEE",
+  fgHighlight: "#EAECEE",
 } as Theme;
 
 export default defaultTheme;

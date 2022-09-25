@@ -1,10 +1,10 @@
-import { applyStyles } from "../helpers";
-import universalStyles from "../universalStyles";
-import { fileExplorer, samples } from "../icons";
-import SideBar from "./SideBar";
-import SidePanel from "./SidePanel";
-import MainPanel from "./MainPanel";
-import Icon from "./shared/Icon";
+import { applyStyles } from "./helpers";
+import universalStyles from "./universalStyles";
+import { fileExplorer, samples } from "./icons";
+import SideBar from "./components/SideBar";
+import SidePanel from "./components/SidePanel";
+import MainPanel from "./components/MainPanel";
+import Icon from "./components/shared/Icon";
 
 class App {
   private _sideBar: SideBar;
@@ -37,6 +37,14 @@ class App {
     } as CSSStyleDeclaration);
 
     document.addEventListener("close-side-panel", this.onCloseSidePanel.bind(this))
+  }
+
+  onObserverFileAdded(path: string) {
+    console.log(path);
+  }
+
+  onObserverDirAdded(path: string) {
+    console.log(path);
   }
 
   private buildSideBar() {
