@@ -202,7 +202,7 @@ class DirItem extends HTMLElement {
         modal.lock();
         return;
       }
-      if (window.api.file.isInDir(value, window.api.path.dirname(this._path))) {
+      if (window.api.file.isInDir(value, this._path)) {
         modal.lock();
         return;
       }
@@ -210,22 +210,16 @@ class DirItem extends HTMLElement {
       modal.unlock();
     }, "");
 
-    const onNewFolderModalCancel = (event: Event) => {
+    const onNewFolderModalCancel = () => {
       modal.remove();
     };
 
-    const onNewFolderModalConfirm = (event: Event) => {
+    const onNewFolderModalConfirm = () => {
       if (!modal.valid) return;
       const folderName = modal.inputValue;
       if (folderName) {
         const fullPath = window.api.path.resolve(this._path, folderName);
-        const customEvent = new CustomEvent("new-folder-requested", {
-          bubbles: true,
-          detail: {
-            path: fullPath,
-          },
-        });
-        this.dispatchEvent(customEvent);
+        window.api.file.createFolder(fullPath);
         modal.remove();
       }
     };
@@ -266,11 +260,11 @@ class DirItem extends HTMLElement {
       modal.unlock();
     }, window.api.path.basename(this._path));
 
-    const onRenameFolderModalCancel = (event: Event) => {
+    const onRenameFolderModalCancel = () => {
       modal.remove();
     };
 
-    const onRenameFolderModalConfirm = (event: Event) => {
+    const onRenameFolderModalConfirm = () => {
       if (!modal.valid) return;
       const newName = modal.inputValue;
       if (newName) {
