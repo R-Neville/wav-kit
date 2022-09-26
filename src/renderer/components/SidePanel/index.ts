@@ -7,6 +7,11 @@ import SamplesView from "./SamplesView";
 const MIN_WIDTH = 200;
 const MAX_WIDTH = 400;
 
+export interface FileInfo {
+  path: string;
+  dir: boolean;
+}
+
 class SidePanel extends HTMLElement {
   private _contentWrapper: HTMLDivElement;
   private _resizeHandle: ResizeHandle;
@@ -30,7 +35,7 @@ class SidePanel extends HTMLElement {
       ...universalStyles,
       display: "none",
       gridTemplateColumns: "1fr max-content",
-      minWidth: "200px",
+      width: "200px",
       backgroundColor: window.theme.bgPrimary,
     } as CSSStyleDeclaration);
 
@@ -65,6 +70,10 @@ class SidePanel extends HTMLElement {
   showSamplesView() {
     this._fileExplorer.hide();
     this._samplesView.show();
+  }
+
+  addFileToDirTree(fileInfo: FileInfo) {
+    this._fileExplorer.addFile(fileInfo);
   }
 
   private buildContentWrapper() {

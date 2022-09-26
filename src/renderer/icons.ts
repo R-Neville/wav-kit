@@ -108,6 +108,16 @@ const samplesPaths = [
   }
 ] as SVGAttributeObject[];
 
+const closedPaths = [
+  {
+    attributes: [
+      ...universalAttributes,
+      [ 'd', 'M 25 0 L 25 100 L 75 50 L 25 0 Z'],
+      [ 'class', 'fill' ]
+    ]
+  }
+] as SVGAttributeObject[];
+
 function buildPath(pathInfo: SVGAttributeObject) {
   const path = document.createElementNS(NAMESPACE_URI, "path");
   for (let attribute of pathInfo.attributes) {
@@ -148,4 +158,8 @@ export function fileExplorer() {
 
 export function samples() {
   return buildIcon(samplesPaths, 100, 100);
+}
+
+export function closed() {
+  return buildIcon(closedPaths, 100, 100);
 }

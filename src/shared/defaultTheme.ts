@@ -5,10 +5,12 @@ const defaultTheme = {
   bgSecondary: "#EAECEE",
   bgAccent: "#212F3D",
   bgHighlight: "#34495E",
+  bgError: "#FADBD8",
   fgPrimary: "#EAECEE",
   fgSecondary: "#17202A",
   fgAccent: "#EAECEE",
   fgHighlight: "#EAECEE",
+  fgError: "#A93226",
 } as Theme;
 
 export default defaultTheme;

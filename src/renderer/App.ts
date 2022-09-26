@@ -2,7 +2,7 @@ import { applyStyles } from "./helpers";
 import universalStyles from "./universalStyles";
 import { fileExplorer, samples } from "./icons";
 import SideBar from "./components/SideBar";
-import SidePanel from "./components/SidePanel";
+import SidePanel, { FileInfo } from "./components/SidePanel";
 import MainPanel from "./components/MainPanel";
 import Icon from "./components/shared/Icon";
 
@@ -36,15 +36,26 @@ class App {
       gridColumn: "3",
     } as CSSStyleDeclaration);
 
-    document.addEventListener("close-side-panel", this.onCloseSidePanel.bind(this))
+    document.addEventListener(
+      "close-side-panel",
+      this.onCloseSidePanel.bind(this)
+    );
   }
 
   onObserverFileAdded(path: string) {
-    console.log(path);
+    const fileInfo = {
+      path,
+      dir: false,
+    };
+    this._sidePanel.addFileToDirTree(fileInfo);
   }
 
   onObserverDirAdded(path: string) {
-    console.log(path);
+    const fileInfo = {
+      path,
+      dir: true,
+    };
+    this._sidePanel.addFileToDirTree(fileInfo);
   }
 
   private buildSideBar() {
@@ -60,11 +71,11 @@ class App {
     const samplesIcon = new Icon(samples(), "35px", true);
     samplesIcon.setColor(window.theme.fgPrimary);
     sideBar.addAction(samplesIcon, () => {
-        this._sidePanel.showSamplesView();
-        if (!this._sidePanelVisible) {
-          this._sidePanel.show();
-        }
-    })
+      this._sidePanel.showSamplesView();
+      if (!this._sidePanelVisible) {
+        this._sidePanel.show();
+      }
+    });
     return sideBar;
   }
 
