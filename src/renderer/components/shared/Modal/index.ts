@@ -112,7 +112,7 @@ class Modal extends HTMLElement {
       applyStyles(this._input, {
         borderColor: window.theme.fgError,
         backgroundColor: window.theme.bgError,
-        color: window.theme.bgError,
+        color: window.theme.fgError,
       } as CSSStyleDeclaration);
     }
   }
@@ -121,9 +121,9 @@ class Modal extends HTMLElement {
     this._valid = true;
     if (this._input) {
       applyStyles(this._input, {
-        borderColor: window.theme.fgAccent,
+        borderColor: window.theme.bgAccent,
         backgroundColor: window.theme.fgAccent,
-        color: window.theme.fgAccent,
+        color: window.theme.bgAccent,
       } as CSSStyleDeclaration);
     }
   }

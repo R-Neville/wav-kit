@@ -140,6 +140,7 @@ class FolderView extends HTMLElement {
     };
 
     const onNewFolderModalConfirm = () => {
+      if (!modal.valid) return;
       const folderName = modal.inputValue;
       if (folderName) {
         const fullPath = window.api.path.resolve(this._path, folderName);
