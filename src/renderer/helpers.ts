@@ -61,8 +61,8 @@ export function insertDirInDirTree(dirItem: DirItem, dirTree: DirTree) {
 
 export function insertDirInDirItem(dirItem: DirItem, parentDirItem: DirItem) {
   parentDirItem.dirItems.push(dirItem);
-  if (dirItem.rendered) {
-    dirItem.organise();
+  if (parentDirItem.rendered || parentDirItem.expanded) {
+    parentDirItem.organise();
   } else {
     sortDirItems(parentDirItem.dirItems);
   }
