@@ -85,7 +85,7 @@ const samplesPaths = [
   {
     attributes: [
       ...universalAttributes,
-      ["d", "M 40 40 L 40 60"],
+      ["d", "M 35 40 L 35 60"],
       ["class", "stroke"],
       ["stroke-width", "4"],
     ]
@@ -93,7 +93,7 @@ const samplesPaths = [
   {
     attributes: [
       ...universalAttributes,
-      ["d", "M 60 25 L 60 75"],
+      ["d", "M 50 25 L 50 75"],
       ["class", "stroke"],
       ["stroke-width", "4"],
     ]
@@ -101,9 +101,27 @@ const samplesPaths = [
   {
     attributes: [
       ...universalAttributes,
-      ["d", "M 80 40 L 80 60"],
+      ["d", "M 65 40 L 65 60"],
       ["class", "stroke"],
       ["stroke-width", "4"],
+    ]
+  },
+  {
+    attributes: [
+      ...universalAttributes,
+      ["d", "M 80 45 L 80 55"],
+      ["class", "stroke"],
+      ["stroke-width", "4"],
+    ]
+  }
+] as SVGAttributeObject[];
+
+const closedPaths = [
+  {
+    attributes: [
+      ...universalAttributes,
+      [ 'd', 'M 25 0 L 25 100 L 75 50 L 25 0 Z'],
+      [ 'class', 'fill' ]
     ]
   }
 ] as SVGAttributeObject[];
@@ -148,4 +166,8 @@ export function fileExplorer() {
 
 export function samples() {
   return buildIcon(samplesPaths, 100, 100);
+}
+
+export function closed() {
+  return buildIcon(closedPaths, 100, 100);
 }
