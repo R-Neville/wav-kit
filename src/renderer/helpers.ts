@@ -1,6 +1,6 @@
-import DirItem from './components/FileExplorer/DirItem';
-import DirTree from './components/FileExplorer/DirTree';
-import FileItem from './components/FileExplorer/FileItem';
+import DirItem from './components/SidePanel/DirItem';
+import DirTree from './components/SidePanel/DirTree';
+import FileItem from './components/SidePanel/FileItem';
 
 export function applyStyles(el: HTMLElement, styles: CSSStyleDeclaration) {
   for (let prop in styles) {
@@ -39,7 +39,7 @@ export function getOldFileItem(name: string, fileItems: FileItem[]) {
   return found[0] ? found[0] : null;
 }
 
-export function findParentDirItem(dirPath: string, list: DirItem[]) : DirItem {
+export function findParentDirItem(dirPath: string, list: DirItem[]) : DirItem | null {
   for (const node of list) {
     if (node.path === dirPath) {
       return node;
@@ -47,7 +47,6 @@ export function findParentDirItem(dirPath: string, list: DirItem[]) : DirItem {
       return findParentDirItem(dirPath, node.dirItems);
     }
   }
-
   return null;
 }
 
@@ -75,7 +74,7 @@ export function handleDirRenamedInDirTree(newDir: DirItem, oldDir: DirItem, dirT
   const index = dirTree.dirItems.indexOf(oldDir);
   dirTree.dirItems.splice(index, 1);
   dirTree.replaceChild(newDir, oldDir);
-  if (oldDir.open) newDir.expand();
+  if (oldDir.expanded) newDir.expand();
   dirTree.dirItems.splice(index, 0, newDir);
 }
 
@@ -83,7 +82,7 @@ export function handleDirRenamedInDirItem(newDir: DirItem, oldDir: DirItem, pare
   const index = parent.dirItems.indexOf(oldDir);
   parent.dirItems.splice(index, 1);
   parent.itemList.replaceChild(newDir, oldDir);
-  if (oldDir.open) newDir.expand();
+  if (oldDir.expanded) newDir.expand();
   parent.dirItems.splice(index, 0, newDir);
 }
 

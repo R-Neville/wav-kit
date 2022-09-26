@@ -13,6 +13,8 @@ class DirItem extends HTMLElement {
   private _rendererd: boolean;
   private _expanded: boolean;
   private _path: string;
+  private _renamed: boolean;
+  private _newName: string | null;
   private _expander: DropdownExpander;
   private _itemList: HTMLDivElement;
   private _dirItems: DirItem[];
@@ -25,6 +27,8 @@ class DirItem extends HTMLElement {
     this._rendererd = false;
     this._expanded = false;
     this._path = path;
+    this._renamed = false;
+    this._newName = null;
     this._expander = new DropdownExpander(window.api.path.basename(this._path));
     this._itemList = this.buildItemList();
     this._dirItems = [];
@@ -54,6 +58,14 @@ class DirItem extends HTMLElement {
 
   set path(newValue: string) {
     this._path = newValue;
+  }
+
+  get renamed() {
+    return this._renamed;
+  }
+
+  get newName() {
+    return this._newName;
   }
 
   get itemList() {
@@ -260,7 +272,11 @@ class DirItem extends HTMLElement {
       if (newName) {
         const parentDir = window.api.path.dirname(this._path);
         const newPath = window.api.path.resolve(parentDir, newName);
-        console.log("New name:", newPath);
+        const success = window.api.file.renameFolder(this._path, newPath);
+        if (success) {
+          this._renamed = true;
+          this._newName = newPath;
+        }
         modal.remove();
       }
     };

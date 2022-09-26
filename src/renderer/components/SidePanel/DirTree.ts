@@ -66,15 +66,17 @@ class DirTree extends HTMLElement {
       }
     } else {
       const parentDirItem = findParentDirItem(parentDirName, this._dirItems);
-      const renamedDirItem = getOldDirItem(
-        dirItem.path,
-        parentDirItem.dirItems
-      );
-      if (renamedDirItem) {
-        handleDirRenamedInDirItem(dirItem, renamedDirItem, parentDirItem);
-        parentDirItem.organise();
-      } else {
-        insertDirInDirItem(dirItem, parentDirItem);
+      if (parentDirItem) {
+        const renamedDirItem = getOldDirItem(
+          dirItem.path,
+          parentDirItem.dirItems
+        );
+        if (renamedDirItem) {
+          handleDirRenamedInDirItem(dirItem, renamedDirItem, parentDirItem);
+          parentDirItem.organise();
+        } else {
+          insertDirInDirItem(dirItem, parentDirItem);
+        }
       }
     }
   }
@@ -92,15 +94,17 @@ class DirTree extends HTMLElement {
       }
     } else {
       const parentDirItem = findParentDirItem(dirName, this._dirItems);
-      const renamedFileItem = getOldFileItem(
-        fileItem.path,
-        parentDirItem.fileItems
-      );
-      if (renamedFileItem) {
-        handleFileRenamedInDirItem(fileItem, renamedFileItem, parentDirItem);
-        parentDirItem.organise();
-      } else {
-        insertFileInDirItem(fileItem, parentDirItem);
+      if (parentDirItem) {
+        const renamedFileItem = getOldFileItem(
+          fileItem.path,
+          parentDirItem.fileItems
+        );
+        if (renamedFileItem) {
+          handleFileRenamedInDirItem(fileItem, renamedFileItem, parentDirItem);
+          parentDirItem.organise();
+        } else {
+          insertFileInDirItem(fileItem, parentDirItem);
+        }
       }
     }
   }

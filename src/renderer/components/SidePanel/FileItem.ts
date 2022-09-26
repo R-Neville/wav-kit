@@ -4,6 +4,7 @@ import universalStyles from "../../universalStyles";
 class FileItem extends HTMLElement {
   private _path: string;
   private _renamed: boolean;
+  private _newName: string | null;
   private _label: HTMLLabelElement;
 
   constructor(path: string) {
@@ -11,6 +12,7 @@ class FileItem extends HTMLElement {
 
     this._path = path;
     this._renamed = false;
+    this._newName = null;
     this._label = document.createElement("label");
     this._label.textContent = window.api.path.basename(this._path);
 
@@ -55,6 +57,10 @@ class FileItem extends HTMLElement {
 
   get renamed() {
     return this._renamed;
+  }
+
+  get newName() {
+    return this._newName;
   }
 
   private onMouseEnter() {
