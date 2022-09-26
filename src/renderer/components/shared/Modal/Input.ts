@@ -7,6 +7,8 @@ class Input extends HTMLInputElement {
 
     if (defaultValue) this.value = defaultValue;
 
+    this.spellcheck = false;
+
     applyStyles(this, {
       ...universalStyles,
       padding: "0 5px",
