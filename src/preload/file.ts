@@ -6,6 +6,10 @@ export function openFolder(path: string) {
   ipcRenderer.send("file:open-folder", { path });
 }
 
+export async function closeFolder(){
+  ipcRenderer.send("file:close-folder");
+}
+
 export function isInDir(name: string, dir: string) {
   const files = fs.readdirSync(dir);
   return files.filter((file) => file === name).length > 0;

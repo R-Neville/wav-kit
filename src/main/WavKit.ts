@@ -52,7 +52,7 @@ class WavKit {
     return this._window;
   }
   
-  async onFileOpenFolder(event: ElectronEvent, args: { path: string }) {
+  async onOpenFolder(event: ElectronEvent, args: { path: string }) {
     const { path } = args;
     if (this._fsObserver) {
       await this._fsObserver.close();
@@ -60,6 +60,13 @@ class WavKit {
     }
     if (this._window) {
       this._fsObserver = new FSObserver(path, this._window);
+    }
+  }
+
+  async onCloseFolder() {
+    if (this._fsObserver) {
+      await this._fsObserver.close();
+      this._fsObserver = null;
     }
   }
 }

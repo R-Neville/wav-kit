@@ -29,6 +29,8 @@ class FileExplorer extends HTMLElement {
       height: "100%",
       backgroundColor: "inherit",
     } as CSSStyleDeclaration);
+
+    this.addEventListener("folder-closed", this.onFolderClosed);
   }
 
   get visible() {
@@ -98,6 +100,12 @@ class FileExplorer extends HTMLElement {
       }
     });
     return button;
+  }
+
+  private onFolderClosed() {
+    this._folderView?.remove();
+    this._folderView = null;
+    this._openFolderButton.style.display = "block";
   }
 }
 

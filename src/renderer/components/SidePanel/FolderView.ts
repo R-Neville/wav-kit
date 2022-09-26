@@ -158,7 +158,8 @@ class FolderView extends HTMLElement {
   }
 
   private onCloseContextMenuOptionClick() {
-    const customEvent = new CustomEvent("close-folder-requested", {
+    window.api.file.closeFolder();
+    const customEvent = new CustomEvent("folder-closed", {
       bubbles: true,
     });
     this.dispatchEvent(customEvent);
