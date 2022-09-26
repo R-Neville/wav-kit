@@ -14,6 +14,7 @@ class FileItem extends HTMLElement {
     super();
 
     this._path = path;
+    this.title = this._path;
     this._renamed = false;
     this._newName = null;
     this._label = document.createElement("label");

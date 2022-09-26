@@ -30,6 +30,7 @@ class DirItem extends HTMLElement {
     this._newName = null;
     this._rendered = false;
     this._expander = new DropdownExpander(window.api.path.basename(this._path));
+    this._expander.title = this._path;
     this._itemList = this.buildItemList();
     this._dirItems = [];
     this._fileItems = [];
