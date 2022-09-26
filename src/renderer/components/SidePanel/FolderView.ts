@@ -26,6 +26,7 @@ class FolderView extends HTMLElement {
     this._scrollView = new ScrollView();
     this._scrollView.addVerticalScrollBar(this._dirTree, 8);
     this._scrollView.setContent(this._dirTree);
+    this._scrollView.hide();
     this._contextMenu = null;
 
     this.appendChild(this._expander);
@@ -144,13 +145,7 @@ class FolderView extends HTMLElement {
       const folderName = modal.inputValue;
       if (folderName) {
         const fullPath = window.api.path.resolve(this._path, folderName);
-        const customEvent = new CustomEvent("new-folder-requested", {
-          bubbles: true,
-          detail: {
-            path: fullPath,
-          },
-        });
-        this.dispatchEvent(customEvent);
+        window.api.file.createFolder(fullPath);
         modal.remove();
       }
     };

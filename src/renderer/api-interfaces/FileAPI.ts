@@ -3,4 +3,5 @@ export default interface FileAPI {
   isInDir: (name: string, dir: string) => boolean;
   rename: (oldPath: string, newPath: string) => boolean;
   renameFolder: (oldPath: string, newPath: string) => boolean;
+  createFolder: (path: string) => void;
 }

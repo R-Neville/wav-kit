@@ -19,6 +19,7 @@ import FileItem from "./FileItem";
 
 class DirTree extends HTMLElement {
   private _path: string;
+  private _rendered: boolean;
   private _dirItems: DirItem[];
   private _fileItems: FileItem[];
 
@@ -26,6 +27,7 @@ class DirTree extends HTMLElement {
     super();
 
     this._path = path;
+    this._rendered = false;
     this._dirItems = [];
     this._fileItems = [];
 
@@ -42,6 +44,10 @@ class DirTree extends HTMLElement {
       "folder-deleted",
       this.onFolderDeleted as EventListener
     );
+  }
+
+  get rendered() {
+    return this._rendered;
   }
 
   get dirItems() {
@@ -129,6 +135,7 @@ class DirTree extends HTMLElement {
     this._fileItems.forEach((fi) => {
       this.appendChild(fi);
     });
+    this._rendered = true;
   }
 
   private expandRecursively(dirItems: DirItem[], path: string) {

@@ -10,11 +10,11 @@ import FileItem from "./FileItem";
 import Modal from "../shared/Modal";
 
 class DirItem extends HTMLElement {
-  private _rendererd: boolean;
   private _expanded: boolean;
   private _path: string;
   private _renamed: boolean;
   private _newName: string | null;
+  private _rendered: boolean;
   private _expander: DropdownExpander;
   private _itemList: HTMLDivElement;
   private _dirItems: DirItem[];
@@ -24,11 +24,11 @@ class DirItem extends HTMLElement {
   constructor(path: string) {
     super();
 
-    this._rendererd = false;
     this._expanded = false;
     this._path = path;
     this._renamed = false;
     this._newName = null;
+    this._rendered = false;
     this._expander = new DropdownExpander(window.api.path.basename(this._path));
     this._itemList = this.buildItemList();
     this._dirItems = [];
@@ -68,6 +68,10 @@ class DirItem extends HTMLElement {
     return this._newName;
   }
 
+  get rendered() {
+    return this._rendered;
+  }
+
   get itemList() {
     return this._itemList;
   }
@@ -90,8 +94,8 @@ class DirItem extends HTMLElement {
 
   expand() {
     if (!this._expanded) {
-      if (!this._rendererd) {
-        this._rendererd = true;
+      if (!this._rendered) {
+        this._rendered = true;
         this.renderContents();
       }
       this._expander.expand();
@@ -120,7 +124,7 @@ class DirItem extends HTMLElement {
   private buildItemList() {
     const itemList = document.createElement("div");
     applyStyles(itemList, {
-      display: "flex",
+      display: "none",
       flexDirection: "column",
       borderLeft: `0.5px solid ${window.theme.fgPrimary}`,
       marginLeft: "10px",
@@ -135,13 +139,13 @@ class DirItem extends HTMLElement {
     this._fileItems.forEach((fi) => {
       this._itemList.appendChild(fi);
     });
+    this._rendered = true;
   }
 
   private onExpanderClicked(event: CustomEvent) {
     if (this !== (event.target as HTMLElement).parentElement) {
       return;
     }
-
     if (this._expanded) {
       this.collapse();
     } else {
@@ -151,7 +155,6 @@ class DirItem extends HTMLElement {
 
   private onExpanderRightClicked(event: CustomEvent) {
     event.stopPropagation();
-
     if (this._contextMenu) {
       this._contextMenu.remove();
       this._contextMenu = null;

@@ -52,22 +52,38 @@ export function findParentDirItem(dirPath: string, list: DirItem[]) : DirItem | 
 
 export function insertDirInDirTree(dirItem: DirItem, dirTree: DirTree) {
   dirTree.dirItems.push(dirItem);
-  sortDirItems(dirTree.dirItems);
+  if (dirTree.rendered) {
+    dirTree.organise();
+  } else {
+    sortDirItems(dirTree.dirItems);
+  }
 }
 
 export function insertDirInDirItem(dirItem: DirItem, parentDirItem: DirItem) {
   parentDirItem.dirItems.push(dirItem);
-  sortDirItems(parentDirItem.dirItems);
+  if (dirItem.rendered) {
+    dirItem.organise();
+  } else {
+    sortDirItems(parentDirItem.dirItems);
+  }
 }
 
 export function insertFileInDirTree(fileItem: FileItem, dirTree: DirTree) {
   dirTree.fileItems.push(fileItem);
-  sortFileItems(dirTree.fileItems);
+  if (dirTree.rendered) {
+    dirTree.organise();
+  } else {
+    sortFileItems(dirTree.fileItems);
+  }
 }
 
 export function insertFileInDirItem(fileItem: FileItem, dirItem: DirItem) {
   dirItem.fileItems.push(fileItem);
-  sortFileItems(dirItem.fileItems);
+  if (dirItem.rendered) {
+    dirItem.organise();
+  } else {
+    sortFileItems(dirItem.fileItems);
+  }
 }
 
 export function handleDirRenamedInDirTree(newDir: DirItem, oldDir: DirItem, dirTree: DirTree) {

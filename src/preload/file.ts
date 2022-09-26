@@ -36,3 +36,14 @@ export function renameFolder(oldPath: string, newPath: string) {
     return false;
   }
 }
+
+export function createFolder(path: string) {
+  try {
+    fs.mkdirSync(path);
+  } catch (error) {
+    const message = `There was a problem creating the folder '${path}': ${
+      (error as Error).message
+    }`;
+    showErrorMessage(message);
+  }
+}
