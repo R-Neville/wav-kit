@@ -39,6 +39,7 @@ class DropdownExpander extends HTMLElement {
       whiteSpace: "nowrap",
       cursor: "pointer",
       userSelect: "none",
+      fontSize: "14px",
       textOverflow: "ellipsis",
       color: window.theme.fgPrimary,
     } as CSSStyleDeclaration);

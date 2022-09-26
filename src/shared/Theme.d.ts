@@ -1,6 +1,7 @@
 export default interface Theme {
   bgPrimary: string;
   bgSecondary: string;
+  bgTertiary: string;
   bgAccent: string;
   bgHighlight: string;
   bgError: string;

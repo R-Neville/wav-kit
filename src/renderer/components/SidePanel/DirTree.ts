@@ -35,7 +35,7 @@ class DirTree extends HTMLElement {
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
-      borderLeft: `0.5px solid ${window.theme.fgPrimary}`,
+      borderLeft: `0.2px solid ${window.theme.bgTertiary}`,
       marginLeft: "10px",
     } as CSSStyleDeclaration);
 

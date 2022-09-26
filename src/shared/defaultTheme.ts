@@ -3,6 +3,7 @@ import Theme from "./Theme";
 const defaultTheme = {
   bgPrimary: "#2C3E50",
   bgSecondary: "#EAECEE",
+  bgTertiary: "#ABB2B9",
   bgAccent: "#212F3D",
   bgHighlight: "#34495E",
   bgError: "#FADBD8",

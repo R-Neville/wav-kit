@@ -126,7 +126,7 @@ class DirItem extends HTMLElement {
     applyStyles(itemList, {
       display: "none",
       flexDirection: "column",
-      borderLeft: `0.5px solid ${window.theme.fgPrimary}`,
+      borderLeft: `0.2px solid ${window.theme.bgTertiary}`,
       marginLeft: "10px",
     } as CSSStyleDeclaration);
     return itemList;
