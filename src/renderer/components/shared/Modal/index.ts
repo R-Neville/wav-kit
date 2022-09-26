@@ -6,9 +6,9 @@ import Selector from "./Selector";
 
 class Modal extends HTMLElement {
   private _valid: boolean;
-  private _input: Input|null;
-  private _selector: Selector|null;
-  private _selection: string|null;
+  private _input: Input | null;
+  private _selector: Selector | null;
+  private _selection: string | null;
   private _contentWrapper: HTMLDivElement;
   private _header: HTMLDivElement;
   private _body: HTMLDivElement;
@@ -73,13 +73,12 @@ class Modal extends HTMLElement {
       backgroundColor: window.theme.fgPrimary,
     } as CSSStyleDeclaration);
 
-
     applyStyles(this._actions, {
       ...universalStyles,
       display: "flex",
       justifyContent: "flex-end",
     } as CSSStyleDeclaration);
-    
+
     this.addEventListener("selection-changed", ((event: CustomEvent) => {
       event.stopPropagation();
       const { newValue } = event.detail;
