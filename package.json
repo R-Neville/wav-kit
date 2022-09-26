@@ -28,6 +28,7 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "chokidar": "^3.5.3"
+    "chokidar": "^3.5.3",
+    "mime-types": "^2.1.35"
   }
 }
