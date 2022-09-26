@@ -1,11 +1,14 @@
 import { applyStyles } from "../../helpers";
 import universalStyles from "../../universalStyles";
+import ContextMenu from "../shared/ContextMenu";
+import Modal from "../shared/Modal";
 
 class FileItem extends HTMLElement {
   private _path: string;
   private _renamed: boolean;
   private _newName: string | null;
   private _label: HTMLLabelElement;
+  private _contextMenu: ContextMenu | null;
 
   constructor(path: string) {
     super();
@@ -15,6 +18,7 @@ class FileItem extends HTMLElement {
     this._newName = null;
     this._label = document.createElement("label");
     this._label.textContent = window.api.path.basename(this._path);
+    this._contextMenu = null;
 
     this.appendChild(this._label);
 
@@ -46,6 +50,7 @@ class FileItem extends HTMLElement {
 
     this.addEventListener("mouseenter", this.onMouseEnter);
     this.addEventListener("mouseleave", this.onMouseLeave);
+    this.addEventListener('contextmenu', this.onContextMenu);
   }
 
   get path() {
@@ -70,6 +75,79 @@ class FileItem extends HTMLElement {
 
   private onMouseLeave() {
     this.style.backgroundColor = "inherit";
+  }
+
+  private onContextMenu(event: MouseEvent) {
+    event.stopPropagation();
+
+    if (this._contextMenu) {
+      this._contextMenu.remove();
+      this._contextMenu = null;
+    }
+    this._contextMenu = this.buildContextMenu();
+    document.body.appendChild(this._contextMenu);
+    this._contextMenu.show(event.pageX, event.pageY);
+  }
+
+  private buildContextMenu() : ContextMenu {
+    const menu = new ContextMenu();
+    menu.addOption('Rename', this.showRenameFileModal.bind(this));
+    return menu;
+  }
+
+  private showRenameFileModal() {
+    const modal = new Modal("Enter the file's new name:");
+    modal.addInput((event) => {
+      const input = event.target as HTMLInputElement;
+      const value = input.value;
+      if (value.length === 0) {
+        modal.lock();
+        return;
+      }
+      if (value.length > 255) {
+        modal.lock();
+        return;
+      }
+      if (!value.match(/^[a-zA-Z0-9._]{1}[a-zA-Z0-9._()-]*$/)) {
+        modal.lock();
+        return;
+      }
+      if (value === "." || value === "..") {
+        modal.lock();
+        return;
+      }
+      if (window.api.file.isInDir(value, window.api.path.dirname(this._path))) {
+        modal.lock();
+        return;
+      }
+
+      modal.unlock();
+    }, window.api.path.basename(this._path));
+
+    const onRenameFileModalCancel = (event: Event) => {
+      modal.remove();
+    };
+
+    const onRenameFileModalConfirm = (event: Event) => {
+      if (!modal.valid) return;
+      const newName = modal.inputValue;
+      if (newName) {
+        const parentDir = window.api.path.dirname(this._path);
+        const newPath = window.api.path.resolve(parentDir, newName);
+        const success = window.api.file.rename(this._path, newPath);
+        if (success) {
+          this._renamed = true;
+          this._newName = newPath;
+        }
+        modal.remove();
+      }
+    };
+
+    modal.addAction("Cancel", onRenameFileModalCancel);
+
+    modal.addAction("Confirm", onRenameFileModalConfirm.bind(this));
+
+    document.body.appendChild(modal);
   }
 }
 
