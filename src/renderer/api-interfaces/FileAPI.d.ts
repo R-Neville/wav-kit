@@ -1,3 +1,5 @@
+import FileStats from "../../shared/FileStats";
+
 export default interface FileAPI {
   openFolder: (path: string) => void;
   closeFolder: () => void;
@@ -5,4 +7,5 @@ export default interface FileAPI {
   rename: (oldPath: string, newPath: string) => boolean;
   renameFolder: (oldPath: string, newPath: string) => boolean;
   createFolder: (path: string) => void;
+  statsFromPath: (path: string) => Promise<FileStats|null>;
 }

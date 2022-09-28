@@ -1,7 +1,11 @@
 import path from "path";
+import fs from "fs";
 import { app, BrowserWindow, Event as ElectronEvent } from "electron";
+import mimeTypes from "mime-types";
 import FSObserver from "./FSObserver";
 import initDialogs from "./initDialogs";
+
+const fsPromises = fs.promises;
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -68,6 +72,15 @@ class WavKit {
       await this._fsObserver.close();
       this._fsObserver = null;
     }
+  }
+
+  async onStatsFromPath(event: ElectronEvent, args: { path: string }) {
+    const { path } = args;
+    const mime = mimeTypes.lookup(path);
+    if (!mime || !mime.includes("audio")) return null;
+    const stats = await fsPromises.stat(path);
+    const mb = (stats.size / (1024 * 1024)).toFixed(2);
+    return { path, mime, mb };
   }
 }
 

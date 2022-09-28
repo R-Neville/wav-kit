@@ -26,14 +26,13 @@ class App {
       ...universalStyles,
       display: "grid",
       gridTemplateColumns: "max-content max-content 1fr",
+      gridTemplateRows: "1fr",
+      overflow: "hidden",
       padding: "0",
       width: "100%",
       height: "100vh",
+      maxHeight: "100vh",
       margin: "0",
-    } as CSSStyleDeclaration);
-
-    applyStyles(this._mainPanel, {
-      gridColumn: "3",
     } as CSSStyleDeclaration);
 
     document.addEventListener(
@@ -60,7 +59,7 @@ class App {
 
   private buildSideBar() {
     const sideBar = new SideBar();
-    const fileExplorerIcon = new Icon(fileExplorer(), "35px", true);
+    const fileExplorerIcon = new Icon(fileExplorer(), "30px", true);
     fileExplorerIcon.setColor(window.theme.fgPrimary);
     sideBar.addAction(fileExplorerIcon, () => {
       this._sidePanel.showFileExplorer();
@@ -68,7 +67,7 @@ class App {
         this._sidePanel.show();
       }
     });
-    const samplesIcon = new Icon(samples(), "35px", true);
+    const samplesIcon = new Icon(samples(), "30px", true);
     samplesIcon.setColor(window.theme.fgPrimary);
     sideBar.addAction(samplesIcon, () => {
       this._sidePanel.showSamplesView();

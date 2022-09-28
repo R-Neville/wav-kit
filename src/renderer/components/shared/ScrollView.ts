@@ -20,6 +20,7 @@ class ScrollView extends HTMLElement {
       overflow: "hidden",
       position: "relative",
       maxWidth: "100%",
+      maxHeight: "100%",
       backgroundColor: "inherit",
     } as CSSStyleDeclaration);
   }

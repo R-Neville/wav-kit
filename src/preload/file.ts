@@ -1,12 +1,14 @@
 import fs from "fs";
 import { ipcRenderer } from "electron";
 import { showErrorMessage } from "./dialog";
+import mimeTypes from "mime-types";
+import FileStats from "../shared/FileStats";
 
 export function openFolder(path: string) {
   ipcRenderer.send("file:open-folder", { path });
 }
 
-export async function closeFolder(){
+export async function closeFolder() {
   ipcRenderer.send("file:close-folder");
 }
 
@@ -50,4 +52,10 @@ export function createFolder(path: string) {
     }`;
     showErrorMessage(message);
   }
+}
+
+export async function statsFromPath(path: string): Promise<FileStats|null> {
+  return ipcRenderer.invoke("file:stats-from-path", { path });
+  
+  
 }

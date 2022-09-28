@@ -27,8 +27,6 @@ class Action extends HTMLElement {
 
     this.addEventListener("click", onClick);
     this.addEventListener("click", this.onClick);
-    this.addEventListener("mouseenter", this.onMouseEnter);
-    this.addEventListener("mouseleave", this.onMouseLeave);
   }
 
   reset() {
@@ -49,18 +47,6 @@ class Action extends HTMLElement {
       });
       this.dispatchEvent(customEvent);
     }
-  }
-
-  private onMouseEnter() {
-    applyStyles(this, {
-      backgroundColor: window.theme.bgHighlight,
-    } as CSSStyleDeclaration);
-  }
-
-  private onMouseLeave() {
-    applyStyles(this, {
-      backgroundColor: "inherit",
-    } as CSSStyleDeclaration);
   }
 }
 
