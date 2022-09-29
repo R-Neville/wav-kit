@@ -15,7 +15,7 @@ class ScrollView extends HTMLElement {
     applyStyles(this, {
       ...universalStyles,
       display: "grid",
-      gridTemplateColumns: "1fr max-content",
+      gridTemplateColumns: "1fr",
       gridTemplateRows: "1fr max-content",
       overflow: "hidden",
       position: "relative",
@@ -56,7 +56,6 @@ class ScrollView extends HTMLElement {
     );
     applyStyles(this._verticalScrollBar, {
       gridRow: "1",
-      gridColumn: "2",
     } as CSSStyleDeclaration);
     this.appendChild(this._verticalScrollBar);
   }

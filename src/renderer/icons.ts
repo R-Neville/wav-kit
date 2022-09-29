@@ -180,6 +180,23 @@ const playPaths = [
   },
 ] as SVGAttributeObject[];
 
+const pausePaths = [
+  {
+    attributes: [
+      ["d", "M 30 20 L 30 80"],
+      ["class", "stroke"],
+      ["stroke-width", "15"],
+    ],
+  },
+  {
+    attributes: [
+      ["d", "M 70 20 L 70 80"],
+      ["class", "stroke"],
+      ["stroke-width", "15"],
+    ],
+  },
+] as SVGAttributeObject[];
+
 const nextPaths = [
   {
     attributes: [
@@ -276,6 +293,10 @@ export function player() {
 
 export function play() {
   return buildIcon(playPaths, 100, 100);
+}
+
+export function pause() {
+  return buildIcon(pausePaths, 100, 100);
 }
 
 export function next() {

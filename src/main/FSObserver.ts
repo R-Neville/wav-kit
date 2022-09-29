@@ -1,8 +1,6 @@
 import chokidar from 'chokidar';
 import { BrowserWindow } from 'electron';
-import mime from "mime-types";
-
-const WAV_MIME = "audio/wave";
+import mimeType from "mime-types";
 
 class FSObserver {
   private _watcher: chokidar.FSWatcher;
@@ -25,7 +23,8 @@ class FSObserver {
 
 function makeOnFileAdded(window: BrowserWindow) {
   return (path: string) => {
-    if (mime.lookup(path) === WAV_MIME) {
+    const mime = mimeType.lookup(path);
+    if (mime && mime.includes("audio")) {
       window.webContents.send('observer:file-added', { path });
     }
   };

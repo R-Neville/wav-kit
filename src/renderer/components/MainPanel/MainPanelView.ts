@@ -62,7 +62,7 @@ export default class MainPanelView extends HTMLElement {
       borderRadius: "3px",
       outline: "none",
       marginLeft: "5px",
-      backgroundColor: window.theme.bgHighlight,
+      backgroundColor: window.theme.fgPrimary + "22",
       fontSize: "1em",
       color: window.theme.fgHighlight,
       cursor: "pointer",

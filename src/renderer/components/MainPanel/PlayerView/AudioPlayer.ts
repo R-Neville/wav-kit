@@ -1,51 +1,151 @@
 import { applyStyles } from "../../../helpers";
 import universalStyles from "../../../universalStyles";
 import Control from "./Control";
-import { next, play, previous } from "../../../icons";
+import { next, pause, play, previous } from "../../../icons";
 import Icon from "../../shared/Icon";
+import AudioProgress from "./AudioProgress";
+import TimeDisplay from "./TimeDisplay";
 
 class AudioPlayer extends HTMLElement {
+  private _visible: boolean;
+  private _playing: boolean;
+  private _audio: HTMLAudioElement | null;
+  private _title: HTMLHeadingElement;
+  private _timeDisplay: TimeDisplay;
   private _controlsView: HTMLDivElement;
+  private _progressBar: AudioProgress;
+  private _playIcon: Icon;
+  private _pauseIcon: Icon;
+  private _playControl: Control;
+  private _previousControl: Control;
+  private _nextControl: Control;
   
   constructor() {
     super();
     
+    this._visible = false;
+    this._playing = false;
+    this._audio = null;
+    this._title = this.buildTitle();
+    this._timeDisplay = new TimeDisplay();
+    this._timeDisplay.setDuration(0);
+    this._timeDisplay.update(0);
+    this._progressBar = new AudioProgress();
     this._controlsView = this.buildControlsView();
+
+    this.appendChild(this._title);
+    this.appendChild(this._timeDisplay);
+    this.appendChild(this._progressBar);
 
     const previousIcon = new Icon(previous(), "20px", false);
     previousIcon.setColor(window.theme.bgAccent);
-    const previousControl = new Control(previousIcon, () => {
-      console.log("previous");
+    this._previousControl = new Control(previousIcon, () => {
+      if (this._audio) {
+        this.pause();
+        if (this._audio.currentTime > 0) {
+          this._audio.currentTime = 0;
+          this._progressBar.reset();
+        }
+      }
     });
-    this._controlsView.appendChild(previousControl);
+    this._controlsView.appendChild(this._previousControl);
 
-    const playIcon = new Icon(play(), "20px", true);
-    playIcon.setColor(window.theme.bgAccent);
-    const playControl = new Control(playIcon, () => {
-      console.log("play");
+    this._playIcon = new Icon(play(), "20px", true);
+    this._pauseIcon = new Icon(pause(), "20px", true);
+    this._playIcon.setColor(window.theme.bgAccent);
+    this._pauseIcon.setColor(window.theme.bgAccent);
+    this._playControl = new Control(this._playIcon, () => {
+      if (this._audio) {
+        if (this._playing) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      }
     });
-    this._controlsView.appendChild(playControl);
+    this._controlsView.appendChild(this._playControl);
 
     const nextIcon = new Icon(next(), "20px", false);
     nextIcon.setColor(window.theme.bgAccent);
-    const nextControl = new Control(nextIcon, () => {
+    this._nextControl = new Control(nextIcon, () => {
       console.log("next");
     });
-    this._controlsView.appendChild(nextControl);
+    this._controlsView.appendChild(this._nextControl);
 
     this.appendChild(this._controlsView);
 
     applyStyles(this, {
       ...universalStyles,
-      display: "flex",
+      display: "none",
       flexDirection: "column",
       alignItems: "center",
       position: "sticky",
       bottom: "0px",
       padding: "1em",
-      height: "100px",
       backgroundColor: window.theme.fgPrimary + "22",
     } as CSSStyleDeclaration);
+  }
+
+  get visible() {
+    return this._visible;
+  }
+
+  get playing() {
+    return this._playing;
+  }
+
+  show() {
+    this._visible = true;
+    this.style.display = "flex";
+  }
+
+  hide() {
+    this._visible = false;
+    this.style.display = "none";
+  }
+
+  loadFile(path: string) {
+    if (this._audio) {
+      this.pause();
+      this._audio = null;
+    }
+
+    this._progressBar.reset();
+
+    this._audio = this.createAudio(path);
+  }
+
+  play() {
+    if (this._audio) {
+      this._audio.play();
+      this._playing = true;
+      this._playIcon.remove();
+      this._playControl.appendChild(this._pauseIcon);
+    }
+  }
+
+  pause() {
+    if (this._audio) {
+      this._audio.pause();
+      this._playing = false;
+      this._pauseIcon.remove();
+      this._playControl.appendChild(this._playIcon);
+    }
+  }
+
+  private buildTitle() {
+    const title = document.createElement("h3");
+    applyStyles(title, {
+      ...universalStyles,
+      margin: "0",
+      textAlign: "center",
+      color: window.theme.fgPrimary,
+    } as CSSStyleDeclaration);
+    return title;
+  }
+
+  private setTitle(title: string) {
+    this._title.textContent = title;
   }
 
   private buildControlsView() {
@@ -55,6 +155,26 @@ class AudioPlayer extends HTMLElement {
       display: "flex",
     } as CSSStyleDeclaration);
     return controlsView;
+  }
+
+  private createAudio(path: string) {
+    const audio = new Audio(path);
+    audio.addEventListener("canplay", () => {
+      if (!isNaN(audio.duration)) {
+        this._timeDisplay.setDuration(audio.duration * 1000);
+      } else {
+        this._timeDisplay.setDuration(0);
+      }
+      this._timeDisplay.update(0);
+      this._progressBar.setDuration(audio.duration * 1000);
+      this.setTitle(window.api.path.basename(path));
+    });
+    audio.addEventListener("timeupdate", () => {
+      const ms = audio.currentTime * 1000;
+      this._timeDisplay.update(ms);
+      this._progressBar.update(ms)
+    });
+    return audio;
   }
 }
 

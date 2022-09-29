@@ -43,16 +43,15 @@ class ScrollBar extends HTMLElement {
       display: "flex",
       alignItems: "center",
       position: "sticky",
-      backgroundColor: "inherit",
+      backgroundColor: "transparent",
     } as CSSStyleDeclaration);
 
     applyStyles(this._thumb, {
       ...universalStyles,
       display: "block",
       position: "absolute",
-      borderRadius: "5px",
       cursor: "grab",
-      backgroundColor: window.theme.bgSecondary,
+      backgroundColor: window.theme.bgSecondary + "22",
     } as CSSStyleDeclaration);
 
     if (this._horizontal) {
@@ -60,8 +59,8 @@ class ScrollBar extends HTMLElement {
         bottom: "0px",
         width: "100%",
         height: `${size}px`,
-        borderTop: "2px solid transparent",
-        borderBottom: "2px solid transparent",
+        borderTop: "4px solid transparent",
+        borderBottom: "4px solid transparent",
       } as CSSStyleDeclaration);
       applyStyles(this._thumb, {
         height: "100%",
@@ -70,8 +69,8 @@ class ScrollBar extends HTMLElement {
       applyStyles(this, {
         right: "0px",
         width: `${size}px`,
-        borderLeft: "2px solid transparent",
-        borderRight: "2px solid transparent",
+        borderLeft: "4px solid transparent",
+        borderRight: "4px solid transparent",
       } as CSSStyleDeclaration);
       applyStyles(this._thumb, {
         width: "100%",
