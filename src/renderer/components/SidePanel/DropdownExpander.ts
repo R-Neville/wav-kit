@@ -45,7 +45,7 @@ class DropdownExpander extends HTMLElement {
     } as CSSStyleDeclaration);
 
     this.addEventListener("click", this.onClick);
-    this.addEventListener("contextmenu", this.onRightClick);
+    this.addEventListener("contextmenu", this.onContextMenu);
     this.addEventListener("mouseenter", this.onMouseEnter);
     this.addEventListener("mouseleave", this.onMouseLeave);
   }
@@ -77,7 +77,9 @@ class DropdownExpander extends HTMLElement {
     this.dispatchEvent(customEvent);
   }
 
-  private onRightClick(event: MouseEvent) {
+  private onContextMenu(event: MouseEvent) {
+    event.preventDefault();
+
     const customEvent = new CustomEvent("expander-right-clicked", {
       bubbles: true,
       detail: {

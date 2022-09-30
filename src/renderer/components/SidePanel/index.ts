@@ -34,8 +34,12 @@ class SidePanel extends HTMLElement {
     applyStyles(this, {
       ...universalStyles,
       display: "none",
-      gridTemplateColumns: "1fr max-content",
+      gridTemplateColumns: "1fr min-content",
+      gridTemplateRows: "1fr",
+      overflow: "hidden",
       width: "200px",
+      height: "100vh",
+      maxHeight: "100vh",
       backgroundColor: window.theme.bgPrimary,
     } as CSSStyleDeclaration);
 
@@ -79,7 +83,12 @@ class SidePanel extends HTMLElement {
   private buildContentWrapper() {
     const wrapper = document.createElement("div");
     applyStyles(wrapper, {
-      
+      ...universalStyles,
+      display: "grid",
+      gridTemplateRows: "1fr",
+      overflow: "hidden",
+      height: "100%",
+      maxHeight: "100%",
     } as CSSStyleDeclaration);
     return wrapper;
   }

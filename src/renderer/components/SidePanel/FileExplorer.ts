@@ -5,10 +5,10 @@ import FolderView from "./FolderView";
 
 class FileExplorer extends HTMLElement {
   private _visible: boolean;
-  private _currentFolder: string|null;
+  private _currentFolder: string | null;
   private _heading: HTMLHeadingElement;
   private _openFolderButton: HTMLButtonElement;
-  private _folderView: FolderView|null;
+  private _folderView: FolderView | null;
 
   constructor() {
     super();
@@ -25,8 +25,10 @@ class FileExplorer extends HTMLElement {
     applyStyles(this, {
       ...universalStyles,
       display: "none",
-      flexDirection: "column",
+      gridTemplateRows: "max-content minmax(0, 1fr)",
+      overflow: "hidden",
       height: "100%",
+      maxHeight: "100%",
       backgroundColor: "inherit",
     } as CSSStyleDeclaration);
 
@@ -39,7 +41,7 @@ class FileExplorer extends HTMLElement {
 
   show() {
     this._visible = true;
-    this.style.display = "flex";
+    this.style.display = "grid";
   }
 
   hide() {
@@ -75,12 +77,13 @@ class FileExplorer extends HTMLElement {
     button.textContent = "Open Folder";
     applyStyles(button, {
       ...universalStyles,
+      alignSelf: "start",
       padding: "0.5em 1em",
       border: "none",
       borderRadius: "3px",
       outline: "none",
-      margin: "1em",
-      backgroundColor: window.theme.bgHighlight,
+      margin: "1em auto",
+      backgroundColor: window.theme.fgHighlight + "22",
       fontSize: "1em",
       color: window.theme.fgHighlight,
       cursor: "pointer",

@@ -157,7 +157,7 @@ class DirItem extends HTMLElement {
   private onExpanderRightClicked(event: CustomEvent) {
     event.stopPropagation();
     if (this._contextMenu) {
-      this._contextMenu.remove();
+      this._contextMenu.destroy();
       this._contextMenu = null;
     }
     const { x, y } = event.detail;

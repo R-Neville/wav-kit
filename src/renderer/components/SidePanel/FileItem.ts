@@ -80,9 +80,8 @@ class FileItem extends HTMLElement {
 
   private onContextMenu(event: MouseEvent) {
     event.stopPropagation();
-
     if (this._contextMenu) {
-      this._contextMenu.remove();
+      this._contextMenu.destroy();
       this._contextMenu = null;
     }
     this._contextMenu = this.buildContextMenu();
@@ -92,8 +91,19 @@ class FileItem extends HTMLElement {
 
   private buildContextMenu() : ContextMenu {
     const menu = new ContextMenu();
+    menu.addOption("Add To Audio Player", this.addFileToPlayerView.bind(this));
     menu.addOption('Rename', this.showRenameFileModal.bind(this));
     return menu;
+  }
+
+  private addFileToPlayerView() {
+    const customEvent = new CustomEvent("add-file-to-player-view", {
+      bubbles: true,
+      detail: {
+        path: this._path,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 
   private showRenameFileModal() {
