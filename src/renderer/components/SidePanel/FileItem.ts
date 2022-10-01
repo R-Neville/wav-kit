@@ -51,7 +51,7 @@ class FileItem extends HTMLElement {
 
     this.addEventListener("mouseenter", this.onMouseEnter);
     this.addEventListener("mouseleave", this.onMouseLeave);
-    this.addEventListener('contextmenu', this.onContextMenu);
+    this.addEventListener("contextmenu", this.onContextMenu);
   }
 
   get path() {
@@ -89,11 +89,22 @@ class FileItem extends HTMLElement {
     this._contextMenu.show(event.pageX, event.pageY);
   }
 
-  private buildContextMenu() : ContextMenu {
+  private buildContextMenu(): ContextMenu {
     const menu = new ContextMenu();
+    menu.addOption("Play With Audio Player", this.playWithAudioPlayer.bind(this));
     menu.addOption("Add To Audio Player", this.addFileToPlayerView.bind(this));
-    menu.addOption('Rename', this.showRenameFileModal.bind(this));
+    menu.addOption("Rename", this.showRenameFileModal.bind(this));
     return menu;
+  }
+
+  private playWithAudioPlayer() {
+    const customEvent = new CustomEvent("play-file-with-audio-player", {
+      bubbles: true,
+      detail: {
+        path: this._path,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 
   private addFileToPlayerView() {

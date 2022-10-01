@@ -36,8 +36,16 @@ class MainPanel extends HTMLElement {
       backgroundColor: window.theme.bgSecondary,
     } as CSSStyleDeclaration);
 
-    this.addEventListener("show-home", this.onShowHome);
-    this.addEventListener("show-player", this.onShowPlayer);
+    this.addEventListener("show-home", this.showHome);
+    this.addEventListener("show-player", this.showPlayer);
+  }
+
+  addFileToPlayerView(path: string) {
+    this._player.addFile(path);
+  }
+
+  playFileWithAudioPlayer(path: string) {
+    this._player.playFile(path);
   }
 
   private buildMenuBar() {
@@ -61,13 +69,13 @@ class MainPanel extends HTMLElement {
     return menuBar;
   }
 
-  private onShowHome() {
+  private showHome() {
     this._currentView?.remove();
     this._currentView = this._home;
     this.appendChild(this._currentView);
   }
 
-  private onShowPlayer() {
+  private showPlayer() {
     this._currentView?.remove();
     this._currentView = this._player;
     this.appendChild(this._currentView);

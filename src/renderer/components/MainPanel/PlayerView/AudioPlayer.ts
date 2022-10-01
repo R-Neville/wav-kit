@@ -44,7 +44,7 @@ class AudioPlayer extends HTMLElement {
         this.pause();
         if (this._audio.currentTime > 0) {
           this._audio.currentTime = 0;
-          this._progressBar.reset();
+          this._progressBar.update(0);
         }
       }
     });
@@ -84,6 +84,8 @@ class AudioPlayer extends HTMLElement {
       padding: "1em",
       backgroundColor: window.theme.fgPrimary + "22",
     } as CSSStyleDeclaration);
+
+    this.addEventListener("seek-to-new-time", this.onSeekToNewTime as EventListener);
   }
 
   get visible() {
@@ -110,7 +112,7 @@ class AudioPlayer extends HTMLElement {
       this._audio = null;
     }
 
-    this._progressBar.reset();
+    this._progressBar.update(0);
 
     this._audio = this.createAudio(path);
   }
@@ -159,6 +161,10 @@ class AudioPlayer extends HTMLElement {
 
   private createAudio(path: string) {
     const audio = new Audio(path);
+    audio.addEventListener("error", () => {
+      const message = `There was an error loading the file ${path}`;
+      window.api.dialog.showErrorMessage(message);
+    });
     audio.addEventListener("canplay", () => {
       if (!isNaN(audio.duration)) {
         this._timeDisplay.setDuration(audio.duration * 1000);
@@ -172,9 +178,29 @@ class AudioPlayer extends HTMLElement {
     audio.addEventListener("timeupdate", () => {
       const ms = audio.currentTime * 1000;
       this._timeDisplay.update(ms);
-      this._progressBar.update(ms)
+      this._progressBar.update(ms);
+    });
+    audio.addEventListener("ended", () => {
+      this._playing = false;
+      this._pauseIcon.remove();
+      this._playControl.appendChild(this._playIcon);
+      this._progressBar.update(0);
+      this._timeDisplay.update(0);
     });
     return audio;
+  }
+
+  private onSeekToNewTime(event: CustomEvent) {
+    const { newTime } = event.detail;
+    if (this._audio) {
+      this._audio.currentTime = newTime;
+      const ms = this._audio.currentTime * 1000;
+      this._timeDisplay.update(ms);
+      this._progressBar.update(ms);
+      if (!this._playing) {
+        this.play();
+      }
+    }
   }
 }
 

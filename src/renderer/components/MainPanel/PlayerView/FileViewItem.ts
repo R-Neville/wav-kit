@@ -14,9 +14,9 @@ class FileViewItem extends HTMLElement {
     super();
     
     this._path = stats.path;
-    this.title = this._path;
     this._nameLabel = this.buildLabel(window.api.path.basename(this._path));
     this._nameLabel.style.marginRight = "auto";
+    this._nameLabel.title = this._path;
     this._sizeLabel = this.buildLabel(`${stats.mb}MB`);
     this._closeButton = this.buildCloseButton();
 
@@ -36,6 +36,12 @@ class FileViewItem extends HTMLElement {
       cursor: "pointer",
     } as CSSStyleDeclaration);
 
+    applyStyles(this._nameLabel, {
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
+    } as CSSStyleDeclaration);
+
     this.addEventListener("dblclick", this.onDblClick);
     this.addEventListener("mouseenter", this.onMouseEnter);
     this.addEventListener("mouseleave", this.onMouseLeave);
@@ -50,9 +56,6 @@ class FileViewItem extends HTMLElement {
     label.textContent = text;
     applyStyles(label, {
       ...universalStyles,
-      overflow: "hidden",
-      whiteSpace: "no-wrap",
-      textOverflow: "ellipsis",
       fontSize: "14px",
       color: window.theme.fgHighlight,
     } as CSSStyleDeclaration);
@@ -101,7 +104,7 @@ class FileViewItem extends HTMLElement {
   }
 
   private onMouseEnter() {
-    this.style.backgroundColor = window.theme.bgAccent + "22";
+    this.style.backgroundColor = window.theme.bgAccent + "55";
   }
 
   private onMouseLeave() {

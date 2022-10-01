@@ -39,6 +39,14 @@ class App {
       "close-side-panel",
       this.onCloseSidePanel.bind(this)
     );
+    document.addEventListener(
+      "add-file-to-player-view",
+      this.onAddFileToPlayerView.bind(this) as EventListener
+    );
+    document.addEventListener(
+      "play-file-with-audio-player",
+      this.onPlayFileWithAudioPlayer.bind(this) as EventListener
+    );
   }
 
   onObserverFileAdded(path: string) {
@@ -81,6 +89,16 @@ class App {
   private onCloseSidePanel() {
     this._sidePanelVisible = false;
     this._sidePanel.hide();
+  }
+
+  private onAddFileToPlayerView(event: CustomEvent) {
+    const { path } = event.detail;
+    this._mainPanel.addFileToPlayerView(path);
+  }
+
+  private onPlayFileWithAudioPlayer(event: CustomEvent) {
+    const { path } = event.detail;
+    this._mainPanel.playFileWithAudioPlayer(path);
   }
 }
 
