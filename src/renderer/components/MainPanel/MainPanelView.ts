@@ -1,15 +1,18 @@
 import { applyStyles } from "../../helpers";
 import universalStyles from "../../universalStyles";
+import DotMenu from "../shared/DotMenu";
 
 export default class MainPanelView extends HTMLElement {
   protected _header: HTMLDivElement;
   protected _body: HTMLDivElement;
+  protected _menu: DotMenu | null;
 
   constructor(title: string) {
     super();
 
     this._header = this.buildHeader(title);
     this._body = document.createElement("div");
+    this._menu = null;
 
     this.appendChild(this._header);
     this.appendChild(this._body);
@@ -25,9 +28,9 @@ export default class MainPanelView extends HTMLElement {
     } as CSSStyleDeclaration);
   }
 
-  protected addHeaderAction(text: string, onClick: EventListener) {
-    const action = this.buildAction(text, onClick);
-    this._header.appendChild(action);
+  protected addMenu() {
+    this._menu = new DotMenu();
+    this._header.appendChild(this._menu);
   }
 
   private buildHeader(title: string) {
@@ -50,24 +53,5 @@ export default class MainPanelView extends HTMLElement {
     header.appendChild(heading);
 
     return header;
-  }
-
-  private buildAction(text: string, onClick: EventListener) {
-    const action = document.createElement("button");
-    action.textContent = text;
-    applyStyles(action, {
-      ...universalStyles,
-      padding: "0.5em 1em",
-      border: "none",
-      borderRadius: "3px",
-      outline: "none",
-      marginLeft: "5px",
-      backgroundColor: window.theme.fgPrimary + "22",
-      fontSize: "1em",
-      color: window.theme.fgHighlight,
-      cursor: "pointer",
-    } as CSSStyleDeclaration);
-    action.addEventListener("click", onClick);
-    return action;
   }
 }

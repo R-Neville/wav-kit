@@ -20,7 +20,8 @@ class PlayerView extends MainPanelView {
     this._files = [];
     this._queue = [];
 
-    this.addHeaderActions();
+    this.addMenu();
+    this.addMenuOptions();
     this._fileView = new FileView();
     this._tabView = this.buildTabView();
     this._tabView.setContent(this._fileView);
@@ -39,12 +40,19 @@ class PlayerView extends MainPanelView {
       maxHeight: "100%",
     } as CSSStyleDeclaration);
 
+    this.addEventListener(
+      "import-file-requested",
+      this.onImportFileRequested as EventListener
+    );
     this.addEventListener("add-file", this.onAddFile as EventListener);
     this.addEventListener(
       "play-file-requested",
       this.onPlayFileRequested as EventListener
     );
-    this.addEventListener("all-files-cleared", this.onAllFilesCleared as EventListener);
+    this.addEventListener(
+      "all-files-cleared",
+      this.onAllFilesCleared as EventListener
+    );
     this.addEventListener("file-cleared", this.onFileCleared as EventListener);
   }
 
@@ -73,24 +81,26 @@ class PlayerView extends MainPanelView {
     this._audioPlayer.play();
   }
 
-  private addHeaderActions() {
-    this.addHeaderAction("Clear", () => {
-      this._fileView.clear();
-    });
-    this.addHeaderAction("Import", async () => {
-      const filenames = await window.api.dialog.showOpenFilesDialog();
-      if (filenames !== null) {
-        filenames.forEach((filename) => {
-          const customEvent = new CustomEvent("add-file", {
-            bubbles: true,
-            detail: {
-              path: filename,
-            },
+  private addMenuOptions() {
+    if (this._menu) {
+      this._menu.addOption("Import File", async () => {
+        const filenames = await window.api.dialog.showOpenFilesDialog();
+        if (filenames !== null) {
+          filenames.forEach((filename) => {
+            const customEvent = new CustomEvent("add-file", {
+              bubbles: true,
+              detail: {
+                path: filename,
+              },
+            });
+            this.dispatchEvent(customEvent);
           });
-          this.dispatchEvent(customEvent);
-        });
-      }
-    });
+        }
+      });
+      this._menu.addOption("Clear Files", () => {
+        this._fileView.clear();
+      });
+    }
   }
 
   private buildTabView() {
@@ -103,7 +113,21 @@ class PlayerView extends MainPanelView {
           tabView.setContent(this._fileView);
         }
       },
-      true
+      true,
+      [
+        {
+          text: "Import File",
+          onClick: (() => {
+            this.importFile();
+          }).bind(this),
+        },
+        {
+          text: "Clear Files",
+          onClick: (() => {
+            this._fileView.clear();
+          }).bind(this),
+        },
+      ]
     );
     tabView.addTab(
       "Queue",
@@ -122,12 +146,32 @@ class PlayerView extends MainPanelView {
     return tabView;
   }
 
+  private async importFile() {
+    const filenames = await window.api.dialog.showOpenFilesDialog();
+    if (filenames !== null) {
+      filenames.forEach((filename) => {
+        const customEvent = new CustomEvent("add-file", {
+          bubbles: true,
+          detail: {
+            path: filename,
+          },
+        });
+        this.dispatchEvent(customEvent);
+      });
+    }
+  }
+
   private async processFile(path: string) {
     const stats = await window.api.file.statsFromPath(path);
     if (stats) {
       this._files.push(stats);
       this._fileView.addItem(stats);
     }
+  }
+
+  private onImportFileRequested(event: CustomEvent) {
+    event.stopPropagation();
+    this.importFile();
   }
 
   private onAddFile(event: CustomEvent) {
