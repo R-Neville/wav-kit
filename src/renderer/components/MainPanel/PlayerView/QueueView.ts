@@ -51,7 +51,7 @@ class QueueView extends HTMLElement {
     if (item) {
       item.remove();
       if (this._items.length === 0) {
-        this.appendChild(this._noFiles);
+        this._contentWrapper.appendChild(this._noFiles);
       }
     }
   }
