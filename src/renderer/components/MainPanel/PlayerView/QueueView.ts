@@ -48,7 +48,12 @@ class QueueView extends HTMLElement {
 
   removeFirstItem() {
     const item = this._items.shift();
-    item?.remove();
+    if (item) {
+      item.remove();
+      if (this._items.length === 0) {
+        this.appendChild(this._noFiles);
+      }
+    }
   }
 
   private buildContentWrapper() {
