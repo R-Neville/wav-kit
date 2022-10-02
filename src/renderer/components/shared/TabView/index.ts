@@ -1,5 +1,6 @@
 import { applyStyles } from "../../../helpers";
 import universalStyles from "../../../universalStyles";
+import ContextMenu from "../ContextMenu";
 import Tab from "./Tab";
 
 class TabView extends HTMLElement {
@@ -34,12 +35,27 @@ class TabView extends HTMLElement {
     this.appendChild(this._content);
   }
 
-  addTab(text: string, onClick: EventListener, active: boolean) {
+  addTab(
+    text: string,
+    onClick: EventListener,
+    active: boolean,
+    contextMenuOptions?: { text: string; onClick: EventListener }[]
+  ) {
     const tab = new Tab(text, onClick);
     this._tabs.push(tab);
     this._tabBar.appendChild(tab);
     if (active) {
       tab.activate();
+    }
+    if (contextMenuOptions) {
+      tab.addEventListener("contextmenu", (event) => {
+        const menu = new ContextMenu();
+        for (let option of contextMenuOptions) {
+          menu.addOption(option.text, option.onClick);
+        }
+        document.body.appendChild(menu);
+        menu.show(event.pageX, event.pageY);
+      })
     }
   }
 
