@@ -14,6 +14,7 @@ class ContextMenu extends HTMLElement {
       zIndex: "99",
       minWidth: "200px",
       borderRadius: "3px",
+      outline: "none",
       backgroundColor: "whitesmoke",
     } as CSSStyleDeclaration);
 
