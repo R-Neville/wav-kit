@@ -238,11 +238,11 @@ class PlayerView extends MainPanelView {
     if (this._audioPlayer.inQueue) {
       this._queue.shift();
       this._queueView.removeFirstItem();
-      if (this._queue.length > 0) {
-        const file = this._queue[0];
-        this._audioPlayer.loadFile(file.path, true);
-        this._audioPlayer.play();
-      }
+    }
+    if (this._queue.length > 0) {
+      const file = this._queue[0];
+      this._audioPlayer.loadFile(file.path, true);
+      this._audioPlayer.play();
     }
   }
 }
