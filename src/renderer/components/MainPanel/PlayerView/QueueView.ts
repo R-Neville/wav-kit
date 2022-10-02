@@ -93,7 +93,7 @@ class QueueView extends HTMLElement {
     const customEvent = new CustomEvent("queue-item-cleared", {
       bubbles: true,
       detail: {
-        path: item.path,
+        index,
       },
     });
     this.dispatchEvent(customEvent);

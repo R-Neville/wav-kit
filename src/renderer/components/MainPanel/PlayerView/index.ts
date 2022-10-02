@@ -64,6 +64,10 @@ class PlayerView extends MainPanelView {
       "add-file-to-queue",
       this.onAddFileToQueue as EventListener
     );
+    this.addEventListener(
+      "queue-item-cleared",
+      this.onQueueItemCleared as EventListener
+    );
     this.addEventListener("file-ended", this.onFileEnded as EventListener);
   }
 
@@ -221,6 +225,12 @@ class PlayerView extends MainPanelView {
       this._audioPlayer.loadFile(file.path, true);
       this._audioPlayer.play();
     }
+  }
+
+  private onQueueItemCleared(event: CustomEvent) {
+    event.stopPropagation();
+    const { index } = event.detail;
+    this._queue.splice(index, 1);
   }
 
   private onFileEnded(event: CustomEvent) {
