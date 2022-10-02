@@ -163,9 +163,9 @@ const playerPaths = [
   {
     attributes: [
       ...universalAttributes,
-      ["d", "m14.06-3.6068a13.047 13.047 0 0 0-13.048 13.048 13.047 13.047 0 0 0 13.048 13.048 13.047 13.047 0 0 0 13.048-13.048 13.047 13.047 0 0 0-13.048-13.048zm-4.3719 4.1943 11.349 8.679-11.349 8.6787z"],
-      ["class", "fill"],
-      ["transform", "translate(-.83096 3.7884)"],
+      ["d", "M 15 15 L 85 50 L 15 85 L 15 15 Z"],
+      ["class", "stroke fill"],
+      ["stroke-width", "7"],
     ],
   },
 ] as SVGAttributeObject[];
@@ -288,7 +288,7 @@ export function home() {
 }
 
 export function player() {
-  return buildIcon(playerPaths, 26.458, 26.458);
+  return buildIcon(playerPaths, 100, 100);
 }
 
 export function play() {
