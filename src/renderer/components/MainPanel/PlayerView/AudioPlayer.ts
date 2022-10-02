@@ -9,6 +9,7 @@ import TimeDisplay from "./TimeDisplay";
 class AudioPlayer extends HTMLElement {
   private _visible: boolean;
   private _playing: boolean;
+  private _inQueue: boolean;
   private _audio: HTMLAudioElement | null;
   private _title: HTMLHeadingElement;
   private _timeDisplay: TimeDisplay;
@@ -25,6 +26,7 @@ class AudioPlayer extends HTMLElement {
     
     this._visible = false;
     this._playing = false;
+    this._inQueue = false;
     this._audio = null;
     this._title = this.buildTitle();
     this._timeDisplay = new TimeDisplay();
@@ -96,6 +98,10 @@ class AudioPlayer extends HTMLElement {
     return this._playing;
   }
 
+  get inQueue() {
+    return this._inQueue;
+  }
+
   show() {
     this._visible = true;
     this.style.display = "flex";
@@ -106,7 +112,9 @@ class AudioPlayer extends HTMLElement {
     this.style.display = "none";
   }
 
-  loadFile(path: string) {
+  loadFile(path: string, inQueue?: boolean) {
+    this._inQueue = inQueue || false;
+
     if (this._audio) {
       this.pause();
       this._audio = null;
@@ -186,6 +194,10 @@ class AudioPlayer extends HTMLElement {
       this._playControl.appendChild(this._playIcon);
       this._progressBar.update(0);
       this._timeDisplay.update(0);
+      const customEvent = new CustomEvent("file-ended", {
+        bubbles: true,
+      });
+      this.dispatchEvent(customEvent);
     });
     return audio;
   }

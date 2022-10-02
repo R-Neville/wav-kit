@@ -3,9 +3,9 @@ import { applyStyles } from "../../../helpers";
 import universalStyles from "../../../universalStyles";
 import FileViewItem from "./FileViewItem";
 import ScrollView from "../../shared/ScrollView";
+import ContextMenu from "../../shared/ContextMenu";
 
 class FileView extends HTMLElement {
-  private _visible: boolean;
   private _items: FileViewItem[];
   private _scrollView: ScrollView;
   private _contentWrapper: HTMLDivElement;
@@ -14,7 +14,6 @@ class FileView extends HTMLElement {
   constructor() {
     super();
 
-    this._visible = false;
     this._items = [];
     this._scrollView = new ScrollView("100%", "100%");
     this._contentWrapper = this.buildContentWrapper();
@@ -33,22 +32,8 @@ class FileView extends HTMLElement {
       maxHeight: "100%",
     } as CSSStyleDeclaration);
 
-    this.addEventListener("clear-item", this.onClearItem as EventListener);
     this.addEventListener("item-dbl-clicked", this.onItemDblClicked as EventListener);
-  }
-
-  get visible() {
-    return this._visible;
-  }
-
-  show() {
-    this._visible = true;
-    this.style.display = "grid";
-  }
-
-  hide() {
-    this._visible = false;
-    this.style.display = "none";
+    this.addEventListener("item-close-button-clicked", this.onItemCloseButtonClicked as EventListener);
   }
 
   addItem(stats: FileStats) {
@@ -58,6 +43,20 @@ class FileView extends HTMLElement {
     const item = new FileViewItem(stats);
     this._items.push(item);
     this._contentWrapper.appendChild(item);
+    item.addEventListener("contextmenu", (event) => {
+      const menu = new ContextMenu();
+      menu.addOption("Add To Queue", () => {
+        const customEvent = new CustomEvent("add-file-to-queue", {
+          bubbles: true,
+          detail: {
+            index: this._items.indexOf(item),
+          },
+        });
+        this.dispatchEvent(customEvent);
+      });
+      document.body.appendChild(menu);
+      menu.show(event.pageX, event.pageY);
+    });
   }
 
   clear() {
@@ -118,7 +117,7 @@ class FileView extends HTMLElement {
     return noFiles;
   }
 
-  private onClearItem(event: CustomEvent) {
+  private onItemCloseButtonClicked(event: CustomEvent) {
     event.stopPropagation();
     const item = event.target as FileViewItem;
     const index = this._items.indexOf(item);
@@ -127,7 +126,7 @@ class FileView extends HTMLElement {
     if (this._items.length === 0) {
       this._contentWrapper.appendChild(this._noFiles);
     }
-    const customEvent = new CustomEvent("file-cleared", {
+    const customEvent = new CustomEvent("file-item-cleared", {
       bubbles: true,
       detail: {
         index,

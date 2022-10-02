@@ -83,9 +83,9 @@ class FileExplorer extends HTMLElement {
       borderRadius: "3px",
       outline: "none",
       margin: "1em auto",
-      backgroundColor: window.theme.fgHighlight + "22",
+      backgroundColor: window.theme.bgAccent,
       fontSize: "1em",
-      color: window.theme.fgHighlight,
+      color: window.theme.fgAccent,
       cursor: "pointer",
     } as CSSStyleDeclaration);
     button.addEventListener("click", async () => {

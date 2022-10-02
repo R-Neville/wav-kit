@@ -47,7 +47,7 @@ class Tab extends HTMLElement {
 
   private onMouseEnter() {
     if (!this._active) {
-      this.style.backgroundColor = window.theme.bgHighlight;
+      this.style.backgroundColor = window.theme.bgSecondary + "11";
     }
   }
 

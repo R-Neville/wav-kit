@@ -6,12 +6,14 @@ import Tab from "../../shared/TabView/Tab";
 import MainPanelView from "../MainPanelView";
 import AudioPlayer from "./AudioPlayer";
 import FileView from "./FileView";
+import QueueView from "./QueueView";
 
 class PlayerView extends MainPanelView {
   private _files: FileStats[];
-  private _queue: string[];
+  private _queue: FileStats[];
   private _tabView: TabView;
   private _fileView: FileView;
+  private _queueView: QueueView;
   private _audioPlayer: AudioPlayer;
 
   constructor() {
@@ -23,6 +25,7 @@ class PlayerView extends MainPanelView {
     this.addMenu();
     this.addMenuOptions();
     this._fileView = new FileView();
+    this._queueView = new QueueView();
     this._tabView = this.buildTabView();
     this._tabView.setContent(this._fileView);
     this._audioPlayer = new AudioPlayer();
@@ -53,7 +56,15 @@ class PlayerView extends MainPanelView {
       "all-files-cleared",
       this.onAllFilesCleared as EventListener
     );
-    this.addEventListener("file-cleared", this.onFileCleared as EventListener);
+    this.addEventListener(
+      "file-item-cleared",
+      this.onFileItemCleared as EventListener
+    );
+    this.addEventListener(
+      "add-file-to-queue",
+      this.onAddFileToQueue as EventListener
+    );
+    this.addEventListener("file-ended", this.onFileEnded as EventListener);
   }
 
   show() {
@@ -132,7 +143,10 @@ class PlayerView extends MainPanelView {
     tabView.addTab(
       "Queue",
       (event) => {
-        console.log("queue");
+        const target = event.target as Tab;
+        if (!target.active) {
+          tabView.setContent(this._queueView);
+        }
       },
       false
     );
@@ -187,14 +201,39 @@ class PlayerView extends MainPanelView {
   }
 
   private onAllFilesCleared(event: CustomEvent) {
-    event.preventDefault();
+    event.stopPropagation();
     this._files = [];
   }
 
-  private onFileCleared(event: CustomEvent) {
-    event.preventDefault();
+  private onFileItemCleared(event: CustomEvent) {
+    event.stopPropagation();
     const { index } = event.detail;
     this._files.splice(index, 1);
+  }
+
+  private onAddFileToQueue(event: CustomEvent) {
+    event.stopPropagation();
+    const { index } = event.detail;
+    const file = this._files[index];
+    this._queue.push(file);
+    this._queueView.addItem(file);
+    if (!this._audioPlayer.playing) {
+      this._audioPlayer.loadFile(file.path, true);
+      this._audioPlayer.play();
+    }
+  }
+
+  private onFileEnded(event: CustomEvent) {
+    event.stopPropagation();
+    if (this._audioPlayer.inQueue) {
+      this._queue.shift();
+      this._queueView.removeFirstItem();
+      if (this._queue.length > 0) {
+        const file = this._queue[0];
+        this._audioPlayer.loadFile(file.path, true);
+        this._audioPlayer.play();
+      }
+    }
   }
 }
 

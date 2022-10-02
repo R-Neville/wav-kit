@@ -49,12 +49,14 @@ class TabView extends HTMLElement {
     }
     if (contextMenuOptions) {
       tab.addEventListener("contextmenu", (event) => {
-        const menu = new ContextMenu();
-        for (let option of contextMenuOptions) {
-          menu.addOption(option.text, option.onClick);
+        if (tab.active) {
+          const menu = new ContextMenu();
+          for (let option of contextMenuOptions) {
+            menu.addOption(option.text, option.onClick);
+          }
+          document.body.appendChild(menu);
+          menu.show(event.pageX, event.pageY);
         }
-        document.body.appendChild(menu);
-        menu.show(event.pageX, event.pageY);
       })
     }
   }

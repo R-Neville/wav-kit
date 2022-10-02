@@ -1,13 +1,13 @@
 import FileStats from "../../../../shared/FileStats";
 import FileListItem from "./FileListItem";
 
-class FileViewItem extends FileListItem {
+class QueueViewItem extends FileListItem {
 
   constructor(stats: FileStats) {
     super(stats);
   }
 }
 
-customElements.define("file-view-item", FileViewItem);
+customElements.define("file-list-item", QueueViewItem);
 
-export default FileViewItem;
+export default QueueViewItem;

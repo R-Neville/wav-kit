@@ -36,7 +36,7 @@ class DotMenu extends HTMLElement {
     this.addEventListener("click", () => {
       if (!this._visible) {
         this._visible = true;
-        this.style.backgroundColor = window.theme.bgAccent;
+        this.style.backgroundColor = window.theme.bgSecondary + "44";
         this._menu.style.display = "flex";
         this.focus();
       } else {
@@ -51,7 +51,7 @@ class DotMenu extends HTMLElement {
 
     this.addEventListener("mouseenter", () => {
       if (!this._visible) {
-        this.style.backgroundColor = window.theme.bgAccent;
+        this.style.backgroundColor = window.theme.bgSecondary + "44";
       }
     });
 
@@ -68,17 +68,17 @@ class DotMenu extends HTMLElement {
     applyStyles(option, {
       ...universalStyles,
       padding: "5px",
-      backgroundColor: "transparent",
+      backgroundColor: window.theme.bgSecondary + "44",
       fontSize: "14px",
-      color: window.theme.fgAccent,
+      color: window.theme.fgPrimary,
       cursor: "pointer",
     } as CSSStyleDeclaration);
     option.addEventListener("click", onClick);
     option.addEventListener("mouseenter", () => {
-      option.style.backgroundColor = window.theme.fgAccent + "09";
+      option.style.backgroundColor = window.theme.bgSecondary + "33";
     });
     option.addEventListener("mouseleave", () => {
-      option.style.backgroundColor = "transparent";
+      option.style.backgroundColor = window.theme.bgSecondary + "44";
     });
     this._menu.appendChild(option);
   }
@@ -112,7 +112,7 @@ class DotMenu extends HTMLElement {
       right: "0px",
       width: "200px",
       outline: "none",
-      backgroundColor: window.theme.bgAccent,
+      backgroundColor: window.theme.bgPrimary,
     } as CSSStyleDeclaration);
     menu.addEventListener("click", (event) => {
       event.stopPropagation();
