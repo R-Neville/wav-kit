@@ -78,7 +78,6 @@ const samplesPaths = [
   },
   {
     attributes: [
-      ...universalAttributes,
       ["d", "M 20 30 L 20 70"],
       ["class", "stroke"],
       ["stroke-width", "4"],
@@ -87,7 +86,6 @@ const samplesPaths = [
 
   {
     attributes: [
-      ...universalAttributes,
       ["d", "M 35 40 L 35 60"],
       ["class", "stroke"],
       ["stroke-width", "4"],
@@ -95,7 +93,6 @@ const samplesPaths = [
   },
   {
     attributes: [
-      ...universalAttributes,
       ["d", "M 50 25 L 50 75"],
       ["class", "stroke"],
       ["stroke-width", "4"],
@@ -103,7 +100,6 @@ const samplesPaths = [
   },
   {
     attributes: [
-      ...universalAttributes,
       ["d", "M 65 40 L 65 60"],
       ["class", "stroke"],
       ["stroke-width", "4"],
@@ -111,7 +107,6 @@ const samplesPaths = [
   },
   {
     attributes: [
-      ...universalAttributes,
       ["d", "M 80 45 L 80 55"],
       ["class", "stroke"],
       ["stroke-width", "4"],
