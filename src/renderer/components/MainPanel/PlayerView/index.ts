@@ -69,6 +69,7 @@ class PlayerView extends MainPanelView {
       this.onQueueItemCleared as EventListener
     );
     this.addEventListener("file-ended", this.onFileEnded as EventListener);
+    this.addEventListener("next-file-requested", this.onNextFileRequested as EventListener);
   }
 
   show() {
@@ -235,15 +236,33 @@ class PlayerView extends MainPanelView {
 
   private onFileEnded(event: CustomEvent) {
     event.stopPropagation();
+    this.playNextFile();
+  }
+
+  private onNextFileRequested(event: CustomEvent) {
+    event.stopPropagation();
+    this.playNextFile();
+  }
+
+  private playNextFile() {
     if (this._audioPlayer.inQueue) {
-      this._queue.shift();
-      this._queueView.removeFirstItem();
+      const queueFirst = this._queue[0];
+      if (queueFirst && queueFirst.path === this._audioPlayer.path) {
+        this.shiftQueue();
+      }
     }
     if (this._queue.length > 0) {
-      const file = this._queue[0];
-      this._audioPlayer.loadFile(file.path, true);
+      const queueNext = this._queue[0];
+      this._audioPlayer.loadFile(queueNext.path, true);
       this._audioPlayer.play();
+    } else {
+      this._audioPlayer.clear();
     }
+  }
+
+  private shiftQueue() {
+    this._queue.shift();
+    this._queueView.removeFirstItem();
   }
 }
 

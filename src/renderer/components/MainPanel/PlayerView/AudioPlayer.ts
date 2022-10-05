@@ -10,6 +10,7 @@ class AudioPlayer extends HTMLElement {
   private _visible: boolean;
   private _playing: boolean;
   private _inQueue: boolean;
+  private _path: string | null;
   private _audio: HTMLAudioElement | null;
   private _title: HTMLHeadingElement;
   private _timeDisplay: TimeDisplay;
@@ -20,13 +21,14 @@ class AudioPlayer extends HTMLElement {
   private _playControl: Control;
   private _previousControl: Control;
   private _nextControl: Control;
-  
+
   constructor() {
     super();
-    
+
     this._visible = false;
     this._playing = false;
     this._inQueue = false;
+    this._path = null;
     this._audio = null;
     this._title = this.buildTitle();
     this._timeDisplay = new TimeDisplay();
@@ -70,7 +72,13 @@ class AudioPlayer extends HTMLElement {
     const nextIcon = new Icon(next(), "20px", false);
     nextIcon.setColor(window.theme.bgAccent);
     this._nextControl = new Control(nextIcon, () => {
-      console.log("next");
+      if (this._playing) {
+        this.pause();
+      }
+      const customEvent = new CustomEvent("next-file-requested", {
+        bubbles: true,
+      });
+      this.dispatchEvent(customEvent);
     });
     this._controlsView.appendChild(this._nextControl);
 
@@ -87,7 +95,10 @@ class AudioPlayer extends HTMLElement {
       backgroundColor: window.theme.fgPrimary + "22",
     } as CSSStyleDeclaration);
 
-    this.addEventListener("seek-to-new-time", this.onSeekToNewTime as EventListener);
+    this.addEventListener(
+      "seek-to-new-time",
+      this.onSeekToNewTime as EventListener
+    );
   }
 
   get visible() {
@@ -100,6 +111,10 @@ class AudioPlayer extends HTMLElement {
 
   get inQueue() {
     return this._inQueue;
+  }
+
+  get path() {
+    return this._path;
   }
 
   show() {
@@ -121,7 +136,7 @@ class AudioPlayer extends HTMLElement {
     }
 
     this._progressBar.update(0);
-
+    this._path = path;
     this._audio = this.createAudio(path);
   }
 
@@ -141,6 +156,18 @@ class AudioPlayer extends HTMLElement {
       this._pauseIcon.remove();
       this._playControl.appendChild(this._playIcon);
     }
+  }
+
+  clear() {
+    if (this._audio && this.playing) {
+      this.pause();
+    }
+    this._path = null;
+    this._audio = null;
+    this._title.textContent = "";
+    this._timeDisplay.setDuration(0);
+    this._timeDisplay.update(0);
+    this._progressBar.update(0);
   }
 
   private buildTitle() {
