@@ -222,6 +222,7 @@ class AudioPlayer extends HTMLElement {
     this._path = null;
     this._audio = null;
     this._title.textContent = "";
+    this._title.title = "";
     this._timeDisplay.setDuration(0);
     this._timeDisplay.update(0);
     this._progressBar.update(0);
@@ -238,8 +239,9 @@ class AudioPlayer extends HTMLElement {
     return title;
   }
 
-  private setTitle(title: string) {
-    this._title.textContent = title;
+  private setTitle(path: string) {
+    this._title.textContent = window.api.path.basename(path);
+    this._title.title = path;
   }
 
   private buildControlsView() {
@@ -291,7 +293,7 @@ class AudioPlayer extends HTMLElement {
       }
       this._timeDisplay.update(0);
       this._progressBar.setDuration(audio.duration * 1000);
-      this.setTitle(window.api.path.basename(path));
+      this.setTitle(path);
     });
     audio.addEventListener("timeupdate", () => {
       const ms = audio.currentTime * 1000;
