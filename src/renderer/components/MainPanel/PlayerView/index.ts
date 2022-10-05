@@ -183,8 +183,11 @@ class PlayerView extends MainPanelView {
   private async processFile(path: string) {
     const stats = await window.api.file.statsFromPath(path);
     if (stats) {
-      this._files.push(stats);
-      this._fileView.addItem(stats);
+      const found = this._files.filter((file) => file.path === stats.path);
+      if (found.length === 0) {
+        this._files.push(stats);
+        this._fileView.addItem(stats);
+      }
     }
   }
 
@@ -220,11 +223,14 @@ class PlayerView extends MainPanelView {
     event.stopPropagation();
     const { index } = event.detail;
     const file = this._files[index];
-    this._queue.push(file);
-    this._queueView.addItem(file);
-    if (!this._audioPlayer.playing) {
-      this._audioPlayer.loadFile(file.path, true);
-      this._audioPlayer.play();
+    const found = this._queue.filter((f) => f.path === file.path);
+    if (found.length === 0) {
+      this._queue.push(file);
+      this._queueView.addItem(file);
+      if (!this._audioPlayer.playing) {
+        this._audioPlayer.loadFile(file.path, true);
+        this._audioPlayer.play();
+      }
     }
   }
 
