@@ -228,6 +228,43 @@ const previousPaths = [
   },
 ] as SVGAttributeObject[];
 
+const repeatPaths = [
+  {
+    attributes: [
+      ...universalAttributes,
+      ["d", "m84.378 106.52-7.6421 7.6175h15.284z"],
+      ["class", "fill"],
+      ["transform", "translate(-71.118 -100.41)"],
+    ],
+  },
+  {
+    attributes: [
+      ...universalAttributes,
+      ["d", "m84.378 103.67h21.134c2.7474 0 5.6132 2.7368 5.6132 5.7811v5.6452c0 2.8566-2.8658 5.7131-6.6868 5.7131h-20.061v-6.6653"],
+      ["class", "stroke"],
+      ["stroke-width", "4"],
+      ["transform", "translate(-71.118 -100.41)"],
+    ]
+  }
+] as SVGAttributeObject[];
+
+const addPaths = [
+  {
+    attributes: [
+      ["d", "M 50 15 L 50 85"],
+      ["class", "stroke"],
+      ["stroke-width", "10"],
+    ],
+  },
+  {
+    attributes: [
+      ["d", "M 15 50 L 85 50"],
+      ["class", "stroke"],
+      ["stroke-width", "10"],
+    ],
+  },
+] as SVGAttributeObject[];
+
 function buildPath(pathInfo: SVGAttributeObject) {
   const path = document.createElementNS(NAMESPACE_URI, "path");
   for (let attribute of pathInfo.attributes) {
@@ -300,4 +337,12 @@ export function next() {
 
 export function previous() {
   return buildIcon(previousPaths, 100, 100);
+}
+
+export function repeat() {
+  return buildIcon(repeatPaths, 48.077, 24.077);
+}
+
+export function add() {
+  return buildIcon(addPaths, 100, 100);
 }
