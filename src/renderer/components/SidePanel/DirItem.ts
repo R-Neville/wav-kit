@@ -19,7 +19,6 @@ class DirItem extends HTMLElement {
   private _itemList: HTMLDivElement;
   private _dirItems: DirItem[];
   private _fileItems: FileItem[];
-  private _contextMenu: ContextMenu | null;
 
   constructor(path: string) {
     super();
@@ -34,7 +33,6 @@ class DirItem extends HTMLElement {
     this._itemList = this.buildItemList();
     this._dirItems = [];
     this._fileItems = [];
-    this._contextMenu = null;
 
     this.appendChild(this._expander);
     this.appendChild(this._itemList);
@@ -156,14 +154,10 @@ class DirItem extends HTMLElement {
 
   private onExpanderRightClicked(event: CustomEvent) {
     event.stopPropagation();
-    if (this._contextMenu) {
-      this._contextMenu.destroy();
-      this._contextMenu = null;
-    }
     const { x, y } = event.detail;
-    this._contextMenu = this.buildContextMenu();
-    document.body.appendChild(this._contextMenu);
-    this._contextMenu.show(x, y);
+    const menu = this.buildContextMenu();
+    document.body.appendChild(menu);
+    menu.show(x, y);
   }
 
   private buildContextMenu(): ContextMenu {
@@ -177,8 +171,6 @@ class DirItem extends HTMLElement {
   private collapseAll() {
     collapseAll(this._dirItems);
     this.collapse();
-    this._contextMenu?.remove();
-    this._contextMenu = null;
   }
 
   private showNewFolderModal() {

@@ -8,7 +8,6 @@ class FileItem extends HTMLElement {
   private _renamed: boolean;
   private _newName: string | null;
   private _label: HTMLLabelElement;
-  private _contextMenu: ContextMenu | null;
 
   constructor(path: string) {
     super();
@@ -19,7 +18,6 @@ class FileItem extends HTMLElement {
     this._newName = null;
     this._label = document.createElement("label");
     this._label.textContent = window.api.path.basename(this._path);
-    this._contextMenu = null;
 
     this.appendChild(this._label);
 
@@ -80,13 +78,9 @@ class FileItem extends HTMLElement {
 
   private onContextMenu(event: MouseEvent) {
     event.stopPropagation();
-    if (this._contextMenu) {
-      this._contextMenu.destroy();
-      this._contextMenu = null;
-    }
-    this._contextMenu = this.buildContextMenu();
-    document.body.appendChild(this._contextMenu);
-    this._contextMenu.show(event.pageX, event.pageY);
+    const menu = this.buildContextMenu();
+    document.body.appendChild(menu);
+    menu.show(event.pageX, event.pageY);
   }
 
   private buildContextMenu(): ContextMenu {
