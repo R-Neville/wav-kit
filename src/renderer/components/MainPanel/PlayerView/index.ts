@@ -262,7 +262,9 @@ class PlayerView extends MainPanelView {
       this._audioPlayer.loadFile(queueNext.path, true);
       this._audioPlayer.play();
     } else {
-      this._audioPlayer.clear();
+      setTimeout(() => {
+        this._audioPlayer.clear();
+      });
     }
   }
 

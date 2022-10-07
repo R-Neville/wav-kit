@@ -223,9 +223,6 @@ class AudioPlayer extends HTMLElement {
   }
 
   clear() {
-    if (this._audio && this.playing) {
-      this.pause();
-    }
     this._path = null;
     this._audio = null;
     this._title.textContent = "";
