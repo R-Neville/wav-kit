@@ -40,41 +40,37 @@ class ScrollBar extends HTMLElement {
 
     applyStyles(this, {
       ...universalStyles,
-      display: "flex",
-      alignItems: "center",
       position: "sticky",
-      backgroundColor: "inherit",
+      overflow: "visible",
+      backgroundColor: "transparent",
     } as CSSStyleDeclaration);
 
     applyStyles(this._thumb, {
       ...universalStyles,
       display: "block",
       position: "absolute",
-      borderRadius: "5px",
       cursor: "grab",
-      backgroundColor: window.theme.bgSecondary,
+      backgroundColor: window.theme.bgSecondary + "55",
     } as CSSStyleDeclaration);
 
     if (this._horizontal) {
       applyStyles(this, {
         bottom: "0px",
         width: "100%",
-        height: `${size}px`,
-        borderTop: "2px solid transparent",
-        borderBottom: "2px solid transparent",
+        height: "0px",
       } as CSSStyleDeclaration);
       applyStyles(this._thumb, {
-        height: "100%",
+        height: `${size}px`,
       } as CSSStyleDeclaration);
     } else {
       applyStyles(this, {
         right: "0px",
-        width: `${size}px`,
-        borderLeft: "2px solid transparent",
-        borderRight: "2px solid transparent",
+        width: "0px",
+        height: "100%",
       } as CSSStyleDeclaration);
       applyStyles(this._thumb, {
-        width: "100%",
+        right: "2px",
+        width: `${size}px`,
       } as CSSStyleDeclaration);
     }
 
@@ -128,13 +124,13 @@ class ScrollBar extends HTMLElement {
       this._scrollEl;
     if (this._horizontal) {
       if (scrollWidth > clientWidth) {
-        this.style.display = "flex";
+        this.style.display = "block";
       } else {
         this.style.display = "none";
       }
     } else {
       if (scrollHeight > clientHeight) {
-        this.style.display = "flex";
+        this.style.display = "block";
       } else {
         this.style.display = "none";
       }

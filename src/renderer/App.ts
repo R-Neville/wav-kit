@@ -26,19 +26,30 @@ class App {
       ...universalStyles,
       display: "grid",
       gridTemplateColumns: "max-content max-content 1fr",
+      gridTemplateRows: "1fr",
+      overflow: "hidden",
       padding: "0",
       width: "100%",
       height: "100vh",
+      maxHeight: "100vh",
       margin: "0",
-    } as CSSStyleDeclaration);
-
-    applyStyles(this._mainPanel, {
-      gridColumn: "3",
     } as CSSStyleDeclaration);
 
     document.addEventListener(
       "close-side-panel",
       this.onCloseSidePanel.bind(this)
+    );
+    document.addEventListener(
+      "add-file-to-player-view",
+      this.onAddFileToPlayerView.bind(this) as EventListener
+    );
+    document.addEventListener(
+      "play-file-with-audio-player",
+      this.onPlayFileWithAudioPlayer.bind(this) as EventListener
+    );
+    document.addEventListener(
+      "add-dir-contents-to-player-view",
+      this.onAddDirContentsToPlayerView.bind(this) as EventListener
     );
   }
 
@@ -60,7 +71,7 @@ class App {
 
   private buildSideBar() {
     const sideBar = new SideBar();
-    const fileExplorerIcon = new Icon(fileExplorer(), "35px", true);
+    const fileExplorerIcon = new Icon(fileExplorer(), "30px", true);
     fileExplorerIcon.setColor(window.theme.fgPrimary);
     sideBar.addAction(fileExplorerIcon, () => {
       this._sidePanel.showFileExplorer();
@@ -68,7 +79,7 @@ class App {
         this._sidePanel.show();
       }
     });
-    const samplesIcon = new Icon(samples(), "35px", true);
+    const samplesIcon = new Icon(samples(), "30px", true);
     samplesIcon.setColor(window.theme.fgPrimary);
     sideBar.addAction(samplesIcon, () => {
       this._sidePanel.showSamplesView();
@@ -82,6 +93,21 @@ class App {
   private onCloseSidePanel() {
     this._sidePanelVisible = false;
     this._sidePanel.hide();
+  }
+
+  private onAddFileToPlayerView(event: CustomEvent) {
+    const { path } = event.detail;
+    this._mainPanel.addFileToPlayerView(path);
+  }
+
+  private onPlayFileWithAudioPlayer(event: CustomEvent) {
+    const { path } = event.detail;
+    this._mainPanel.playFileWithAudioPlayer(path);
+  }
+
+  private onAddDirContentsToPlayerView(event: CustomEvent) {
+    const { path } = event.detail;
+    this._mainPanel.addDirContentsToPlayerView(path);
   }
 }
 

@@ -6,7 +6,7 @@ class ScrollView extends HTMLElement {
   private _verticalScrollBar: ScrollBar | null;
   private _horizontalScrollBar: ScrollBar | null;
 
-  constructor() {
+  constructor(maxWidth: string, maxHeight: string) {
     super();
 
     this._verticalScrollBar = null;
@@ -15,12 +15,12 @@ class ScrollView extends HTMLElement {
     applyStyles(this, {
       ...universalStyles,
       display: "grid",
-      gridTemplateColumns: "1fr max-content",
-      gridTemplateRows: "1fr max-content",
-      overflow: "hidden",
+      gridTemplateColumns: "1fr",
+      gridTemplateRows: "minmax(0, 1fr) max-content",
       position: "relative",
-      maxWidth: "100%",
-      backgroundColor: "inherit",
+      overflow: "hidden",
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
     } as CSSStyleDeclaration);
   }
 
@@ -55,7 +55,6 @@ class ScrollView extends HTMLElement {
     );
     applyStyles(this._verticalScrollBar, {
       gridRow: "1",
-      gridColumn: "2",
     } as CSSStyleDeclaration);
     this.appendChild(this._verticalScrollBar);
   }

@@ -32,9 +32,9 @@ class DirTree extends HTMLElement {
     this._fileItems = [];
 
     applyStyles(this, {
-      display: "flex",
-      flexDirection: "column",
       overflow: "hidden",
+      minHeight: "0px",
+      maxHeight: "100%",
       borderLeft: `0.2px solid ${window.theme.bgTertiary}`,
       marginLeft: "10px",
     } as CSSStyleDeclaration);

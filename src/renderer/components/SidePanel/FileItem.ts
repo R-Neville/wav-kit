@@ -8,7 +8,6 @@ class FileItem extends HTMLElement {
   private _renamed: boolean;
   private _newName: string | null;
   private _label: HTMLLabelElement;
-  private _contextMenu: ContextMenu | null;
 
   constructor(path: string) {
     super();
@@ -19,7 +18,6 @@ class FileItem extends HTMLElement {
     this._newName = null;
     this._label = document.createElement("label");
     this._label.textContent = window.api.path.basename(this._path);
-    this._contextMenu = null;
 
     this.appendChild(this._label);
 
@@ -51,7 +49,7 @@ class FileItem extends HTMLElement {
 
     this.addEventListener("mouseenter", this.onMouseEnter);
     this.addEventListener("mouseleave", this.onMouseLeave);
-    this.addEventListener('contextmenu', this.onContextMenu);
+    this.addEventListener("contextmenu", this.onContextMenu);
   }
 
   get path() {
@@ -80,20 +78,37 @@ class FileItem extends HTMLElement {
 
   private onContextMenu(event: MouseEvent) {
     event.stopPropagation();
-
-    if (this._contextMenu) {
-      this._contextMenu.remove();
-      this._contextMenu = null;
-    }
-    this._contextMenu = this.buildContextMenu();
-    document.body.appendChild(this._contextMenu);
-    this._contextMenu.show(event.pageX, event.pageY);
+    const menu = this.buildContextMenu();
+    document.body.appendChild(menu);
+    menu.show(event.pageX, event.pageY);
   }
 
-  private buildContextMenu() : ContextMenu {
+  private buildContextMenu(): ContextMenu {
     const menu = new ContextMenu();
-    menu.addOption('Rename', this.showRenameFileModal.bind(this));
+    menu.addOption("Play With Audio Player", this.playWithAudioPlayer.bind(this));
+    menu.addOption("Add To Audio Player", this.addFileToPlayerView.bind(this));
+    menu.addOption("Rename", this.showRenameFileModal.bind(this));
     return menu;
+  }
+
+  private playWithAudioPlayer() {
+    const customEvent = new CustomEvent("play-file-with-audio-player", {
+      bubbles: true,
+      detail: {
+        path: this._path,
+      },
+    });
+    this.dispatchEvent(customEvent);
+  }
+
+  private addFileToPlayerView() {
+    const customEvent = new CustomEvent("add-file-to-player-view", {
+      bubbles: true,
+      detail: {
+        path: this._path,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 
   private showRenameFileModal() {

@@ -10,6 +10,7 @@ class ContextMenuOption extends HTMLElement {
 
     applyStyles(this, {
       ...universalStyles,
+      display: "block",
       padding: "5px",
       width: "100%",
       backgroundColor: "inherit",

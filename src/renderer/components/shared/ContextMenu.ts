@@ -2,24 +2,28 @@ import { applyStyles } from "../../helpers";
 import ContextMenuOption from "./ContextMenuOption";
 
 class ContextMenu extends HTMLElement {
-
   constructor() {
     super();
 
+    this.tabIndex = 100;
+
     applyStyles(this, {
       display: "none",
-      flexDirection: "column",
-      position: "absolute",
+      position: "fixed",
       zIndex: "99",
-      width: "200px",
+      minWidth: "200px",
       borderRadius: "3px",
-      backgroundColor: "whitesmoke",
+      outline: "none",
+      backgroundColor: "#E5E8E8",
     } as CSSStyleDeclaration);
 
-    document.addEventListener(
-      "click",
-      this.onClickAway.bind(this) as EventListener
-    );
+    
+    this.addEventListener("click", () => {
+      this.blur();
+    });
+    this.addEventListener("blur", () => {
+      this.destroy();
+    });
   }
 
   addOption(text: string, action: EventListener) {
@@ -28,18 +32,27 @@ class ContextMenu extends HTMLElement {
   }
 
   show(x: number, y: number) {
-    this.style.left = x + "px";
-    this.style.top = y + "px";
-    this.style.display = "flex";
+    this.style.display = "block";
+
+    const { width, height } = this.getBoundingClientRect();
+
+    if (x > document.body.clientWidth - width) {
+      this.style.left = x - width + "px";
+    } else {
+      this.style.left = x + "px";
+    }
+
+    if (y > document.body.clientHeight - height) {
+      this.style.top = y - height + "px";
+    } else {
+      this.style.top = y + "px";
+    }
+
+    this.focus();
   }
 
   destroy() {
     this.remove();
-    document.removeEventListener("click", this.onClickAway);
-  }
-
-  private onClickAway(event: Event) {
-    this.destroy();
   }
 }
 

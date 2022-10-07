@@ -23,8 +23,8 @@ class FolderView extends HTMLElement {
     this._expanded = false;
     this._expander = new DropdownExpander(window.api.path.basename(this._path));
     this._dirTree = new DirTree(this._path);
-    this._scrollView = new ScrollView();
-    this._scrollView.addVerticalScrollBar(this._dirTree, 8);
+    this._scrollView = new ScrollView("100%", "calc(100% - 26px)");
+    this._scrollView.addVerticalScrollBar(this._dirTree, 10);
     this._scrollView.setContent(this._dirTree);
     this._scrollView.hide();
     this._contextMenu = null;
@@ -34,10 +34,10 @@ class FolderView extends HTMLElement {
 
     applyStyles(this, {
       ...universalStyles,
-      display: "flex",
-      flexDirection: "column",
+      display: "grid minmax(0, 1fr)",
+      overflow: "hidden",
       width: "100%",
-      maxHeight: "calc(100% - 20px)",
+      maxHeight: "100%",
     } as CSSStyleDeclaration);
 
     this.addEventListener(
@@ -84,7 +84,7 @@ class FolderView extends HTMLElement {
 
   private onExpanderRightClicked(event: CustomEvent) {
     if (this._contextMenu) {
-      this._contextMenu.remove();
+      this._contextMenu.destroy();
       this._contextMenu = null;
     }
     const { x, y } = event.detail;
@@ -103,7 +103,7 @@ class FolderView extends HTMLElement {
 
   private collapseAll() {
     collapseAll(this._dirTree.dirItems);
-    this._contextMenu?.remove();
+    this._contextMenu?.destroy();
     this._contextMenu = null;
   }
 

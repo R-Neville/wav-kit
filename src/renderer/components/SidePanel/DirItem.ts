@@ -19,7 +19,6 @@ class DirItem extends HTMLElement {
   private _itemList: HTMLDivElement;
   private _dirItems: DirItem[];
   private _fileItems: FileItem[];
-  private _contextMenu: ContextMenu | null;
 
   constructor(path: string) {
     super();
@@ -34,7 +33,6 @@ class DirItem extends HTMLElement {
     this._itemList = this.buildItemList();
     this._dirItems = [];
     this._fileItems = [];
-    this._contextMenu = null;
 
     this.appendChild(this._expander);
     this.appendChild(this._itemList);
@@ -156,14 +154,10 @@ class DirItem extends HTMLElement {
 
   private onExpanderRightClicked(event: CustomEvent) {
     event.stopPropagation();
-    if (this._contextMenu) {
-      this._contextMenu.remove();
-      this._contextMenu = null;
-    }
     const { x, y } = event.detail;
-    this._contextMenu = this.buildContextMenu();
-    document.body.appendChild(this._contextMenu);
-    this._contextMenu.show(x, y);
+    const menu = this.buildContextMenu();
+    document.body.appendChild(menu);
+    menu.show(x, y);
   }
 
   private buildContextMenu(): ContextMenu {
@@ -171,14 +165,13 @@ class DirItem extends HTMLElement {
     menu.addOption("Collapse All", this.collapseAll.bind(this));
     menu.addOption("New Folder", this.showNewFolderModal.bind(this));
     menu.addOption("Rename", this.showRenameFolderModal.bind(this));
+    menu.addOption("Add Files Audio Player", this.addFilesToAudioPlayer.bind(this));
     return menu;
   }
 
   private collapseAll() {
     collapseAll(this._dirItems);
     this.collapse();
-    this._contextMenu?.remove();
-    this._contextMenu = null;
   }
 
   private showNewFolderModal() {
@@ -284,6 +277,16 @@ class DirItem extends HTMLElement {
     modal.addAction("Confirm", onRenameFolderModalConfirm.bind(this));
 
     document.body.appendChild(modal);
+  }
+
+  private addFilesToAudioPlayer() {
+    const customEvent = new CustomEvent("add-dir-contents-to-player-view", {
+      bubbles: true,
+      detail: {
+        path: this._path,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 
   private getFileItemIndexFromName(filename: string) {
