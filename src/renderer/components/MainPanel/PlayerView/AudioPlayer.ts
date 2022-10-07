@@ -129,10 +129,17 @@ class AudioPlayer extends HTMLElement {
       if (this._playing) {
         this.pause();
       }
-      const customEvent = new CustomEvent("next-file-requested", {
-        bubbles: true,
-      });
-      this.dispatchEvent(customEvent);
+      if (this._audio) {
+        if (this._repeat) {
+          this._audio.currentTime = 0;
+          this.play();
+        } else {
+          const customEvent = new CustomEvent("next-file-requested", {
+            bubbles: true,
+          });
+          this.dispatchEvent(customEvent);
+        }
+      }
     });
     this._controlsView.appendChild(this._nextControl);
     
