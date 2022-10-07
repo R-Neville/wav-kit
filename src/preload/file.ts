@@ -1,7 +1,6 @@
 import fs from "fs";
 import { ipcRenderer } from "electron";
 import { showErrorMessage } from "./dialog";
-import mimeTypes from "mime-types";
 import FileStats from "../shared/FileStats";
 
 export function openFolder(path: string) {
@@ -15,6 +14,19 @@ export async function closeFolder() {
 export function isInDir(name: string, dir: string) {
   const files = fs.readdirSync(dir);
   return files.filter((file) => file === name).length > 0;
+}
+
+export async function readDir(path: string) {
+  try {
+    const files = await fs.promises.readdir(path);
+    return files;
+  } catch (error) {
+    const message = `There was a problem reading the files in the folder ${path}: ${
+      (error as Error).message
+    }`;
+    showErrorMessage(message);
+    return null;
+  }
 }
 
 export function rename(oldPath: string, newPath: string) {
@@ -56,6 +68,4 @@ export function createFolder(path: string) {
 
 export async function statsFromPath(path: string): Promise<FileStats|null> {
   return ipcRenderer.invoke("file:stats-from-path", { path });
-  
-  
 }

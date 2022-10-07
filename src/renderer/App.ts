@@ -47,6 +47,10 @@ class App {
       "play-file-with-audio-player",
       this.onPlayFileWithAudioPlayer.bind(this) as EventListener
     );
+    document.addEventListener(
+      "add-dir-contents-to-player-view",
+      this.onAddDirContentsToPlayerView.bind(this) as EventListener
+    );
   }
 
   onObserverFileAdded(path: string) {
@@ -99,6 +103,11 @@ class App {
   private onPlayFileWithAudioPlayer(event: CustomEvent) {
     const { path } = event.detail;
     this._mainPanel.playFileWithAudioPlayer(path);
+  }
+
+  private onAddDirContentsToPlayerView(event: CustomEvent) {
+    const { path } = event.detail;
+    this._mainPanel.addDirContentsToPlayerView(path);
   }
 }
 

@@ -48,6 +48,15 @@ class MainPanel extends HTMLElement {
     this._player.playFile(path);
   }
 
+  async addDirContentsToPlayerView(path: string) {
+    const files = await window.api.file.readDir(path);
+    if (files) {
+      files.forEach((filename) => {
+        this._player.addFile(window.api.path.resolve(path, filename));
+      });
+    }
+  }
+
   private buildMenuBar() {
     const menuBar = new MenuBar();
     const homeIcon = new Icon(home(), "30px", true);

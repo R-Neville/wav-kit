@@ -165,6 +165,7 @@ class DirItem extends HTMLElement {
     menu.addOption("Collapse All", this.collapseAll.bind(this));
     menu.addOption("New Folder", this.showNewFolderModal.bind(this));
     menu.addOption("Rename", this.showRenameFolderModal.bind(this));
+    menu.addOption("Add Files Audio Player", this.addFilesToAudioPlayer.bind(this));
     return menu;
   }
 
@@ -276,6 +277,16 @@ class DirItem extends HTMLElement {
     modal.addAction("Confirm", onRenameFolderModalConfirm.bind(this));
 
     document.body.appendChild(modal);
+  }
+
+  private addFilesToAudioPlayer() {
+    const customEvent = new CustomEvent("add-dir-contents-to-player-view", {
+      bubbles: true,
+      detail: {
+        path: this._path,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 
   private getFileItemIndexFromName(filename: string) {
