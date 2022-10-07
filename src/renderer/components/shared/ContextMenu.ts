@@ -9,13 +9,12 @@ class ContextMenu extends HTMLElement {
 
     applyStyles(this, {
       display: "none",
-      flexDirection: "column",
-      position: "absolute",
+      position: "fixed",
       zIndex: "99",
       minWidth: "200px",
       borderRadius: "3px",
       outline: "none",
-      backgroundColor: "whitesmoke",
+      backgroundColor: "#E5E8E8",
     } as CSSStyleDeclaration);
 
     
@@ -33,18 +32,18 @@ class ContextMenu extends HTMLElement {
   }
 
   show(x: number, y: number) {
-    this.style.display = "flex";
+    this.style.display = "block";
 
     const { width, height } = this.getBoundingClientRect();
 
-    if (x + width > window.innerWidth - width) {
+    if (x > document.body.clientWidth - width) {
       this.style.left = x - width + "px";
     } else {
       this.style.left = x + "px";
     }
 
-    if (y + height > window.innerHeight - height) {
-      this.style.left = y - height + "px";
+    if (y > document.body.clientHeight - height) {
+      this.style.top = y - height + "px";
     } else {
       this.style.top = y + "px";
     }
