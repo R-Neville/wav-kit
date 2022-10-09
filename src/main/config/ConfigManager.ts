@@ -68,4 +68,11 @@ export default class ConfigManager {
     this._userConfig?.importedFiles.splice(index, 1);
     this.saveConfig();
   }
+
+  resetImportedFiles() {
+    if (this._userConfig) {
+      this._userConfig.importedFiles = []
+      this.saveConfig();
+    }
+  }
 }

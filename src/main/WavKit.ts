@@ -100,6 +100,10 @@ class WavKit {
     const { index } = args;
     this._configManager.removeImportedFileAtIndex(index);
   }
+
+  onConfigRemoveAllImportedFiles() {
+    this._configManager.resetImportedFiles();
+  }
 }
 
 export default WavKit;

@@ -225,6 +225,7 @@ class PlayerView extends MainPanelView {
   private onAllFilesCleared(event: CustomEvent) {
     event.stopPropagation();
     this._files = [];
+    window.api.config.removeAllImportedFiles();
   }
 
   private onFileItemCleared(event: CustomEvent) {

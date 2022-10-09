@@ -7,5 +7,12 @@ export default function initIPC(app: WavKit) {
   ipcMain.handle("file:stats-from-path", app.onStatsFromPath.bind(app));
   ipcMain.handle("config:imported-files", app.onConfigImportedFiles.bind(app));
   ipcMain.on("config:add-imported-file", app.onConfigAddImportedFile.bind(app));
-  ipcMain.on("config:remove-imported-file", app.onConfigRemoveImportedFile.bind(app));
+  ipcMain.on(
+    "config:remove-imported-file",
+    app.onConfigRemoveImportedFile.bind(app)
+  );
+  ipcMain.on(
+    "config:remove-all-imported-files",
+    app.onConfigRemoveAllImportedFiles.bind(app)
+  );
 }

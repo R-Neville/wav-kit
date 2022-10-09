@@ -11,3 +11,7 @@ export function addImportedFile(path: string) {
 export function removeImportedFile(index: number) {
   ipcRenderer.send("config:remove-imported-file", { index });
 }
+
+export function removeAllImportedFiles() {
+  ipcRenderer.send("config:remove-all-imported-files");
+}
