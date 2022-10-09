@@ -72,6 +72,10 @@ class PlayerView extends MainPanelView {
     this.addEventListener("next-file-requested", this.onNextFileRequested as EventListener);
   }
 
+  connectedCallback() {
+    this.loadImportedFiles();
+  }
+
   show() {
     this.style.display = "grid";
   }
@@ -81,12 +85,7 @@ class PlayerView extends MainPanelView {
   }
 
   addFile(path: string) {
-    const found = this._files.filter((file) => {
-      return file.path === path;
-    });
-    if (found.length === 0) {
-      this.processFile(path);
-    }
+    this.processFile(path);
   }
 
   playFile(path: string) {
@@ -95,6 +94,20 @@ class PlayerView extends MainPanelView {
     }
     this._audioPlayer.loadFile(path);
     this._audioPlayer.play();
+  }
+
+  private async loadImportedFiles() {
+    const paths = await window.api.config.importedFiles();
+    paths.forEach(async (path) => {
+      const stats = await window.api.file.statsFromPath(path);
+      if (stats) {
+        const found = this._files.filter((file) => file.path === stats.path);
+        if (found.length === 0) {
+          this._files.push(stats);
+          this._fileView.addItem(stats);
+        }
+      }
+    });
   }
 
   private addMenuOptions() {
@@ -187,6 +200,7 @@ class PlayerView extends MainPanelView {
       if (found.length === 0) {
         this._files.push(stats);
         this._fileView.addItem(stats);
+        window.api.config.addImportedFile(stats.path);
       }
     }
   }
@@ -211,12 +225,14 @@ class PlayerView extends MainPanelView {
   private onAllFilesCleared(event: CustomEvent) {
     event.stopPropagation();
     this._files = [];
+    window.api.config.removeAllImportedFiles();
   }
 
   private onFileItemCleared(event: CustomEvent) {
     event.stopPropagation();
     const { index } = event.detail;
     this._files.splice(index, 1);
+    window.api.config.removeImportedFile(index);
   }
 
   private onAddFileToQueue(event: CustomEvent) {
