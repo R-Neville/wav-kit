@@ -88,7 +88,18 @@ class WavKit {
   }
 
   async onConfigImportedFiles() {
-    return this._configManager.importedFiles;
+    const filenames = this._configManager.importedFiles;
+    let importedFiles: string[] = [];
+    if (filenames) {
+      filenames.forEach((filename, index) => {
+        if (!fs.existsSync(filename)) {
+          this._configManager.removeImportedFileAtIndex(index);
+        } else {
+          importedFiles.push(filename);
+        }
+      });
+    }
+    return importedFiles;
   }
 
   onConfigAddImportedFile(_event: ElectronEvent, args: { path: string }) {
