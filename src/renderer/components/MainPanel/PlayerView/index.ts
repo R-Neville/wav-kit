@@ -6,6 +6,7 @@ import Tab from "../../shared/TabView/Tab";
 import MainPanelView from "../MainPanelView";
 import AudioPlayer from "./AudioPlayer";
 import FileView from "./FileView";
+import PlaylistsView from "./PlaylistsView";
 import QueueView from "./QueueView";
 
 class PlayerView extends MainPanelView {
@@ -14,6 +15,7 @@ class PlayerView extends MainPanelView {
   private _tabView: TabView;
   private _fileView: FileView;
   private _queueView: QueueView;
+  private _playlistsView: PlaylistsView;
   private _audioPlayer: AudioPlayer;
 
   constructor() {
@@ -26,6 +28,7 @@ class PlayerView extends MainPanelView {
     this.addMenuOptions();
     this._fileView = new FileView();
     this._queueView = new QueueView();
+    this._playlistsView = new PlaylistsView();
     this._tabView = this.buildTabView();
     this._tabView.setContent(this._fileView);
     this._audioPlayer = new AudioPlayer();
@@ -171,7 +174,10 @@ class PlayerView extends MainPanelView {
     tabView.addTab(
       "Playlists",
       (event) => {
-        console.log("playlists");
+        const target = event.target as Tab;
+        if (!target.active) {
+          tabView.setContent(this._playlistsView);
+        }
       },
       false
     );
