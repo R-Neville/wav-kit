@@ -1,8 +1,12 @@
 import { applyStyles } from "../../../helpers";
 import universalStyles from "../../../universalStyles";
 import ScrollView from "../../shared/ScrollView";
+import PlaylistsViewItem from "./PlaylistsViewItem";
+import Playlist from "../../../../shared/Playlist";
+import Modal from "../../shared/Modal";
 
 class PlaylistsView extends HTMLElement {
+  private _items: PlaylistsViewItem[];
   private _scrollView: ScrollView;
   private _contentWrapper: HTMLDivElement;
   private _noPlaylists: HTMLDivElement;
@@ -10,6 +14,7 @@ class PlaylistsView extends HTMLElement {
   constructor() {
     super();
 
+    this._items = [];
     this._scrollView = new ScrollView("100%", "100%");
     this._contentWrapper = this.buildContentWrapper();
     this._noPlaylists = this.buildNoPlaylists();
@@ -26,6 +31,16 @@ class PlaylistsView extends HTMLElement {
       overflow: "hidden",
       maxHeight: "100%",
     } as CSSStyleDeclaration);
+  }
+
+  addItem(playlist: Playlist) {
+    if (this._items.length === 0) {
+      this._noPlaylists.remove();
+    }
+
+    const item = new PlaylistsViewItem(playlist);
+    this._items.push(item);
+    this._contentWrapper.appendChild(item);
   }
 
   private buildContentWrapper() {
@@ -64,6 +79,39 @@ class PlaylistsView extends HTMLElement {
       color: window.theme.fgAccent,
       cursor: "pointer",
     } as CSSStyleDeclaration);
+    button.addEventListener("click", () => {
+      const modal = new Modal("Enter a name for the playlist:");
+      const onInput = async () => {
+        const value = modal.inputValue;
+        if (value.length === 0) {
+          modal.lock();
+          return;
+        }
+        const isAvailable = await window.api.config.validatePlaylistName(value);
+        if (!isAvailable) {
+          modal.lock();
+          return;
+        }
+        modal.unlock();
+      };
+      modal.addInput(onInput, "");
+      modal.addAction("Cancel", () => {
+        modal.destroy();
+      });
+      modal.addAction("Confirm", () => {
+        const value = modal.inputValue;
+        window.api.config.createPlaylist(value);
+        const customEvent = new CustomEvent("new-playlist-created", {
+          bubbles: true,
+          detail: {
+            name: value,
+          },
+        });
+        this.dispatchEvent(customEvent);
+        modal.destroy();
+      });
+      document.body.appendChild(modal);
+    });
     noPlaylists.appendChild(button);
     return noPlaylists;
   }

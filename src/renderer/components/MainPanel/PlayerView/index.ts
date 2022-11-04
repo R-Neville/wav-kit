@@ -1,4 +1,5 @@
 import FileStats from "../../../../shared/FileStats";
+import Playlist from "../../../../shared/Playlist";
 import { applyStyles } from "../../../helpers";
 import universalStyles from "../../../universalStyles";
 import TabView from "../../shared/TabView";
@@ -8,10 +9,12 @@ import AudioPlayer from "./AudioPlayer";
 import FileView from "./FileView";
 import PlaylistsView from "./PlaylistsView";
 import QueueView from "./QueueView";
+import Modal from "../../shared/Modal";
 
 class PlayerView extends MainPanelView {
   private _files: FileStats[];
   private _queue: FileStats[];
+  private _playlists: Playlist[];
   private _tabView: TabView;
   private _fileView: FileView;
   private _queueView: QueueView;
@@ -23,6 +26,7 @@ class PlayerView extends MainPanelView {
 
     this._files = [];
     this._queue = [];
+    this._playlists = [];
 
     this.addMenu();
     this.addMenuOptions();
@@ -72,11 +76,19 @@ class PlayerView extends MainPanelView {
       this.onQueueItemCleared as EventListener
     );
     this.addEventListener("file-ended", this.onFileEnded as EventListener);
-    this.addEventListener("next-file-requested", this.onNextFileRequested as EventListener);
+    this.addEventListener(
+      "next-file-requested",
+      this.onNextFileRequested as EventListener
+    );
+    this.addEventListener(
+      "new-playlist-created",
+      this.onNewPlaylistCreated as EventListener
+    );
   }
 
   connectedCallback() {
     this.loadImportedFiles();
+    this.loadPlaylists();
   }
 
   show() {
@@ -110,6 +122,14 @@ class PlayerView extends MainPanelView {
           this._fileView.addItem(stats);
         }
       }
+    });
+  }
+
+  private async loadPlaylists() {
+    const playlists = await window.api.config.playlists();
+    playlists.forEach((playlist) => {
+      this._playlists.push(playlist);
+      this._playlistsView.addItem(playlist);
     });
   }
 
@@ -179,7 +199,47 @@ class PlayerView extends MainPanelView {
           tabView.setContent(this._playlistsView);
         }
       },
-      false
+      false,
+      [
+        {
+          text: "New Playlist",
+          onClick: () => {
+            const modal = new Modal("Enter a name for the playlist:");
+            const onInput = async () => {
+              const value = modal.inputValue;
+              if (value.length === 0) {
+                modal.lock();
+                return;
+              }
+              const isAvailable = await window.api.config.validatePlaylistName(
+                value
+              );
+              if (!isAvailable) {
+                modal.lock();
+                return;
+              }
+              modal.unlock();
+            };
+            modal.addInput(onInput, "");
+            modal.addAction("Cancel", () => {
+              modal.destroy();
+            });
+            modal.addAction("Confirm", () => {
+              const value = modal.inputValue;
+              window.api.config.createPlaylist(value);
+              const customEvent = new CustomEvent("new-playlist-created", {
+                bubbles: true,
+                detail: {
+                  name: value,
+                },
+              });
+              this.dispatchEvent(customEvent);
+              modal.destroy();
+            });
+            document.body.appendChild(modal);
+          },
+        },
+      ]
     );
     return tabView;
   }
@@ -293,6 +353,17 @@ class PlayerView extends MainPanelView {
   private shiftQueue() {
     this._queue.shift();
     this._queueView.removeFirstItem();
+  }
+
+  private onNewPlaylistCreated(event: CustomEvent) {
+    event.stopPropagation();
+    const { name } = event.detail;
+    const playlist = {
+      name,
+      files: [],
+    } as Playlist;
+    this._playlists.push(playlist);
+    this._playlistsView.addItem(playlist);
   }
 }
 

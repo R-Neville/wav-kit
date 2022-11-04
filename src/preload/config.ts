@@ -15,3 +15,15 @@ export function removeImportedFile(index: number) {
 export function removeAllImportedFiles() {
   ipcRenderer.send("config:remove-all-imported-files");
 }
+
+export async function playlists() {
+  return await ipcRenderer.invoke("config:playlists");
+}
+
+export async function validatePlaylistName(name: string) {
+  return await ipcRenderer.invoke("config:validate-playlist-name", { name });
+}
+
+export function createPlaylist(name: string) {
+  ipcRenderer.send("config:create-playlist", { name });
+}

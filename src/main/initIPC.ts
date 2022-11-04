@@ -15,4 +15,10 @@ export default function initIPC(app: WavKit) {
     "config:remove-all-imported-files",
     app.onConfigRemoveAllImportedFiles.bind(app)
   );
+  ipcMain.handle("config:playlists", app.onConfigPlaylists.bind(app));
+  ipcMain.handle(
+    "config:validate-playlist-name",
+    app.onConfigValidatePlaylistName.bind(app)
+  );
+  ipcMain.on("config:create-playlist", app.onConfigCreatePlaylist.bind(app));
 }

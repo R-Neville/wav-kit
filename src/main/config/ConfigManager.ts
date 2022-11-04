@@ -5,6 +5,7 @@ import Config from "./Config";
 import { isEmpty, deepCopy } from "../../shared/utils";
 import validateConfig from "./validateConfig";
 import showErrorMessage from "../showErrorMessage";
+import Playlist from "../../shared/Playlist";
 
 const userDataPath = app.getPath("userData");
 
@@ -38,6 +39,10 @@ export default class ConfigManager {
 
   get importedFiles() {
     return this._userConfig?.importedFiles;
+  }
+
+  get playlists() {
+    return this._userConfig?.playlists;
   }
 
   restoreDefaultConfig() {
@@ -74,5 +79,15 @@ export default class ConfigManager {
       this._userConfig.importedFiles = []
       this.saveConfig();
     }
+  }
+
+  removeFileFromPlaylist(playlistIndex: number, fileIndex: number) {
+    this._userConfig?.playlists[playlistIndex].files.splice(fileIndex, 1);
+    this.saveConfig();
+  }
+
+  addPlaylist(playlist: Playlist) {
+    this._userConfig?.playlists.push(playlist);
+    this.saveConfig();
   }
 }

@@ -31,7 +31,7 @@ class FileListItem extends HTMLElement {
       overflow: "hidden",
       padding: "10px 20px",
       backgroundColor: window.theme.bgHighlight,
-      whiteSpace: "no-wrap",
+      whiteSpace: "nowrap",
       textOverflow: "ellipsis",
       cursor: "pointer",
     } as CSSStyleDeclaration);
