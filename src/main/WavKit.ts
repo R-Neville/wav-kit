@@ -144,6 +144,14 @@ class WavKit {
     } as Playlist;
     this._configManager.addPlaylist(playlist);
   }
+
+  onConfigDeletePlaylistAtIndex(
+    _event: ElectronEvent,
+    args: { index: number }
+  ) {
+    const { index } = args;
+    this._configManager.deletePlaylistAtIndex(index);
+  }
 }
 
 export default WavKit;

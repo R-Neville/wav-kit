@@ -84,6 +84,10 @@ class PlayerView extends MainPanelView {
       "new-playlist-created",
       this.onNewPlaylistCreated as EventListener
     );
+    this.addEventListener(
+      "delete-playlist",
+      this.onDeletePlaylist as EventListener
+    );
   }
 
   connectedCallback() {
@@ -364,6 +368,18 @@ class PlayerView extends MainPanelView {
     } as Playlist;
     this._playlists.push(playlist);
     this._playlistsView.addItem(playlist);
+  }
+
+  private onDeletePlaylist(event: CustomEvent) {
+    const { name } = event.detail;
+    const found = this._playlists.filter((p) => p.name === name);
+    if (found.length > 0) {
+      const playlist = found[0];
+      const index = this._playlists.indexOf(playlist);
+      this._playlists.splice(index, 1);
+      window.api.config.deletePlaylistAtIndex(index);
+      this._playlistsView.removeItemAtIndex(index);
+    }
   }
 }
 

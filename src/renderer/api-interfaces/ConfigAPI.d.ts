@@ -8,4 +8,5 @@ export default interface ConfigAPI {
   playlists: () => Promise<Playlist[]>;
   validatePlaylistName: (name: string) => Promise<boolean>;
   createPlaylist: (name: string) => void;
+  deletePlaylistAtIndex: (index: number) => void;
 }

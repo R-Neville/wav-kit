@@ -21,4 +21,5 @@ export default function initIPC(app: WavKit) {
     app.onConfigValidatePlaylistName.bind(app)
   );
   ipcMain.on("config:create-playlist", app.onConfigCreatePlaylist.bind(app));
+  ipcMain.on("config:delete-playlist-at-index", app.onConfigDeletePlaylistAtIndex.bind(app));
 }

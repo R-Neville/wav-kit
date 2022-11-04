@@ -31,6 +31,11 @@ class PlaylistsView extends HTMLElement {
       overflow: "hidden",
       maxHeight: "100%",
     } as CSSStyleDeclaration);
+
+    this.addEventListener(
+      "item-delete-button-clicked",
+      this.onItemDeleteButtonClicked as EventListener
+    );
   }
 
   addItem(playlist: Playlist) {
@@ -41,6 +46,14 @@ class PlaylistsView extends HTMLElement {
     const item = new PlaylistsViewItem(playlist);
     this._items.push(item);
     this._contentWrapper.appendChild(item);
+  }
+
+  removeItemAtIndex(index: number) {
+    const item = this._items.splice(index, 1)[0];
+    item.remove();
+    if (this._items.length === 0) {
+      this._contentWrapper.appendChild(this._noPlaylists);
+    }
   }
 
   private buildContentWrapper() {
@@ -114,6 +127,25 @@ class PlaylistsView extends HTMLElement {
     });
     noPlaylists.appendChild(button);
     return noPlaylists;
+  }
+
+  private onItemDeleteButtonClicked(event: CustomEvent) {
+    const { name } = event.detail;
+    const modal = new Modal(`Delete '${name}' playlist?`);
+    modal.addAction("Cancel", () => {
+      modal.destroy();
+    });
+    modal.addAction("Yes", (event) => {
+      const customEvent = new CustomEvent("delete-playlist", {
+        bubbles: true,
+        detail: {
+          name,
+        },
+      });
+      this.dispatchEvent(customEvent);
+      modal.destroy();
+    });
+    document.body.appendChild(modal);
   }
 }
 

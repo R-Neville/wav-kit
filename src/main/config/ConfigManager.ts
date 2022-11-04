@@ -90,4 +90,9 @@ export default class ConfigManager {
     this._userConfig?.playlists.push(playlist);
     this.saveConfig();
   }
+
+  deletePlaylistAtIndex(index: number) {
+    this._userConfig?.playlists.splice(index, 1);
+    this.saveConfig();
+  }
 }

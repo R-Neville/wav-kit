@@ -27,3 +27,7 @@ export async function validatePlaylistName(name: string) {
 export function createPlaylist(name: string) {
   ipcRenderer.send("config:create-playlist", { name });
 }
+
+export function deletePlaylistAtIndex(index: number) {
+  ipcRenderer.send("config:delete-playlist-at-index", { index });
+}
