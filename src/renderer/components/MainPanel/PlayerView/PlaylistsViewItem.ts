@@ -5,8 +5,7 @@ import Icon from "../../shared/Icon";
 import { close } from "../../../icons";
 
 class PlaylistsViewItem extends HTMLElement {
-  private _name: string;
-  private _files: string[];
+  private _playlist: Playlist;
   private _nameLabel: HTMLLabelElement;
   private _songCountLabel: HTMLLabelElement;
   private _deleteButton: HTMLButtonElement;
@@ -14,10 +13,11 @@ class PlaylistsViewItem extends HTMLElement {
   constructor(playlist: Playlist) {
     super();
 
-    this._name = playlist.name;
-    this._files = playlist.files;
-    this._nameLabel = this.buildNameLabel(this._name);
-    this._songCountLabel = this.buildSongCountLabel(this._files.length);
+    this._playlist = playlist;
+    this._nameLabel = this.buildNameLabel(this._playlist.name);
+    this._songCountLabel = this.buildSongCountLabel(
+      this._playlist.files.length
+    );
     this._deleteButton = this.buildDeleteButton();
 
     this.appendChild(this._nameLabel);
@@ -31,6 +31,7 @@ class PlaylistsViewItem extends HTMLElement {
       padding: "10px 20px",
     } as CSSStyleDeclaration);
 
+    this.addEventListener("dblclick", this.onDblClick);
     this.addEventListener("mouseenter", this.onMouseEnter);
     this.addEventListener("mouseleave", this.onMouseLeave);
   }
@@ -83,7 +84,7 @@ class PlaylistsViewItem extends HTMLElement {
       const customEvent = new CustomEvent("item-delete-button-clicked", {
         bubbles: true,
         detail: {
-          name: this._name,
+          name: this._playlist.name,
         },
       });
       this.dispatchEvent(customEvent);
@@ -95,6 +96,16 @@ class PlaylistsViewItem extends HTMLElement {
       button.style.backgroundColor = "inherit";
     });
     return button;
+  }
+
+  private onDblClick() {
+    const customEvent = new CustomEvent("show-playlist-view", {
+      bubbles: true,
+      detail: {
+        playlist: this._playlist,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 
   private onMouseEnter() {

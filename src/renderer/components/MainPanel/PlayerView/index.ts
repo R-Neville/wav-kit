@@ -10,6 +10,7 @@ import FileView from "./FileView";
 import PlaylistsView from "./PlaylistsView";
 import QueueView from "./QueueView";
 import Modal from "../../shared/Modal";
+import PlaylistView from "./PlaylistView";
 
 class PlayerView extends MainPanelView {
   private _files: FileStats[];
@@ -19,6 +20,7 @@ class PlayerView extends MainPanelView {
   private _fileView: FileView;
   private _queueView: QueueView;
   private _playlistsView: PlaylistsView;
+  private _playlistView: PlaylistView | null;
   private _audioPlayer: AudioPlayer;
 
   constructor() {
@@ -35,6 +37,7 @@ class PlayerView extends MainPanelView {
     this._playlistsView = new PlaylistsView();
     this._tabView = this.buildTabView();
     this._tabView.setContent(this._fileView);
+    this._playlistView = null;
     this._audioPlayer = new AudioPlayer();
     this._audioPlayer.show();
 
@@ -87,6 +90,11 @@ class PlayerView extends MainPanelView {
     this.addEventListener(
       "delete-playlist",
       this.onDeletePlaylist as EventListener
+    );
+    this.addEventListener("show-tab-view", this.onShowTabView);
+    this.addEventListener(
+      "show-playlist-view",
+      this.onShowPlaylistView as EventListener
     );
   }
 
@@ -380,6 +388,18 @@ class PlayerView extends MainPanelView {
       window.api.config.deletePlaylistAtIndex(index);
       this._playlistsView.removeItemAtIndex(index);
     }
+  }
+
+  private onShowTabView() {
+    this._playlistView?.remove();
+    this._body.insertBefore(this._tabView, this._audioPlayer);
+  }
+
+  private onShowPlaylistView(event: CustomEvent) {
+    const { playlist } = event.detail;
+    this._playlistView = new PlaylistView(playlist);
+    this._tabView.remove();
+    this._body.insertBefore(this._playlistView, this._audioPlayer);
   }
 }
 
