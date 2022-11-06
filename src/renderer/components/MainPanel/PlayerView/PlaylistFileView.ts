@@ -142,7 +142,7 @@ class PlaylistFileView extends HTMLElement {
     const customEvent = new CustomEvent("play-file-requested", {
       bubbles: true,
       detail: {
-        path,
+        file: path,
       }
     });
     this.dispatchEvent(customEvent);

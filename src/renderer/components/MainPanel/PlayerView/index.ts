@@ -16,6 +16,8 @@ class PlayerView extends MainPanelView {
   private _files: FileStats[];
   private _queue: FileStats[];
   private _playlists: Playlist[];
+  private _playlist: Playlist | null;
+  private _playlistIndex: number;
   private _tabView: TabView;
   private _fileView: FileView;
   private _queueView: QueueView;
@@ -29,6 +31,8 @@ class PlayerView extends MainPanelView {
     this._files = [];
     this._queue = [];
     this._playlists = [];
+    this._playlist = null;
+    this._playlistIndex = 0;
 
     this.addMenu();
     this.addMenuOptions();
@@ -91,7 +95,7 @@ class PlayerView extends MainPanelView {
       "delete-playlist",
       this.onDeletePlaylist as EventListener
     );
-    this.addEventListener("show-tab-view", this.onShowTabView);
+    this.addEventListener("show-tab-view", this.onShowTabView as EventListener);
     this.addEventListener(
       "show-playlist-view",
       this.onShowPlaylistView as EventListener
@@ -99,6 +103,10 @@ class PlayerView extends MainPanelView {
     this.addEventListener(
       "playlist-updated",
       this.onPlaylistUpdated as EventListener
+    );
+    this.addEventListener(
+      "play-file-from-playlist-requested",
+      this.onPlayFileFromPlaylistRequested as EventListener
     );
   }
 
@@ -348,6 +356,19 @@ class PlayerView extends MainPanelView {
     this.playNextFile();
   }
 
+  private onPlayFileFromPlaylistRequested(event: CustomEvent) {
+    event.stopPropagation();
+    const { playlist, file } = event.detail;
+    const foundPlaylist = this._playlists.find((p) => {
+      return p.name === playlist;
+    });
+    if (foundPlaylist) {
+      this._playlist = foundPlaylist;
+      this._playlistIndex = this._playlist.files.indexOf(file);
+      this.playFile(file);
+    }
+  }
+
   private playNextFile() {
     if (this._audioPlayer.inQueue) {
       const queueFirst = this._queue[0];
@@ -355,15 +376,28 @@ class PlayerView extends MainPanelView {
         this.shiftQueue();
       }
     }
+
     if (this._queue.length > 0) {
       const queueNext = this._queue[0];
       this._audioPlayer.loadFile(queueNext.path, true);
       this._audioPlayer.play();
-    } else {
-      setTimeout(() => {
-        this._audioPlayer.clear();
-      });
+      return;
     }
+
+    if (this._playlist) {
+      if (this._playlistIndex < this._playlist.files.length - 1) {
+        this._playlistIndex += 1;
+        this.playFile(this._playlist.files[this._playlistIndex]);
+        return;
+      } else {
+        this._playlistIndex = 0;
+        this._playlist = null;
+      }
+    }
+    
+    setTimeout(() => {
+      this._audioPlayer.clear();
+    });
   }
 
   private shiftQueue() {
@@ -383,6 +417,7 @@ class PlayerView extends MainPanelView {
   }
 
   private onDeletePlaylist(event: CustomEvent) {
+    event.stopPropagation();
     const { name } = event.detail;
     const found = this._playlists.filter((p) => p.name === name);
     if (found.length > 0) {
@@ -396,12 +431,14 @@ class PlayerView extends MainPanelView {
     }
   }
 
-  private onShowTabView() {
+  private onShowTabView(event: CustomEvent) {
+    event.stopPropagation();
     this._playlistView?.remove();
     this._body.insertBefore(this._tabView, this._audioPlayer);
   }
 
   private onShowPlaylistView(event: CustomEvent) {
+    event.stopPropagation();
     const { playlist } = event.detail;
     if (!this._playlistView || this._playlistView.name !== playlist.name) {
       this._playlistView = new PlaylistView(playlist);
@@ -411,6 +448,7 @@ class PlayerView extends MainPanelView {
   }
 
   private onPlaylistUpdated(event: CustomEvent) {
+    event.stopPropagation();
     const { playlist } = event.detail;
     for (let i = 0; i < this._playlists.length; i++) {
       if (this._playlists[i].name === playlist.name) {

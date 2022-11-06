@@ -30,10 +30,13 @@ class PlaylistView extends HTMLElement {
       "add-file-to-playlist-requested",
       this.onAddFileToPlaylistRequested as EventListener
     );
-
     this.addEventListener(
       "file-removed-from-playlist",
       this.onFileRemovedFromPlaylist as EventListener
+    );
+    this.addEventListener(
+      "play-file-requested",
+      this.onPlayFileRequested as EventListener
     );
 
     this._playlist.files.forEach(async (filename) => {
@@ -108,6 +111,19 @@ class PlaylistView extends HTMLElement {
       bubbles: true,
       detail: {
         playlist: this._playlist,
+      },
+    });
+    this.dispatchEvent(customEvent);
+  }
+
+  private onPlayFileRequested(event: CustomEvent) {
+    event.stopPropagation();
+    const { file } = event.detail;
+    const customEvent = new CustomEvent("play-file-from-playlist-requested", {
+      bubbles: true,
+      detail: {
+        file,
+        playlist: this._playlist.name,
       },
     });
     this.dispatchEvent(customEvent);
