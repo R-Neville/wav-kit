@@ -65,13 +65,17 @@ export default class ConfigManager {
   }
 
   addImportedFile(path: string) {
-    this._userConfig?.importedFiles.push(path);
-    this.saveConfig();
+    if (this._userConfig) {
+      this._userConfig.importedFiles.push(path);
+      this.saveConfig();
+    }
   }
 
   removeImportedFileAtIndex(index: number) {
-    this._userConfig?.importedFiles.splice(index, 1);
-    this.saveConfig();
+    if (this._userConfig) {
+      this._userConfig.importedFiles.splice(index, 1);
+      this.saveConfig();
+    }
   }
 
   resetImportedFiles() {
@@ -81,18 +85,48 @@ export default class ConfigManager {
     }
   }
 
-  removeFileFromPlaylist(playlistIndex: number, fileIndex: number) {
-    this._userConfig?.playlists[playlistIndex].files.splice(fileIndex, 1);
-    this.saveConfig();
+  addFileToPlaylist(filename: string, playlist: string) {
+    if (this._userConfig) {
+      for (let p of this._userConfig.playlists) {
+        if (p.name === playlist) {
+          p.files.push(filename);
+          break;
+        }
+      }
+      this.saveConfig();
+    }
+  }
+
+  removeFileFromPlaylistAtIndex(fileIndex: number, playlistIndex: number) {
+    if (this._userConfig) {
+      this._userConfig.playlists[playlistIndex].files.splice(fileIndex, 1);
+      this.saveConfig();
+    }
+  }
+
+  removeFileFromPlaylist(fileIndex: number, playlistName: string) {
+    if (this._userConfig) {
+      for (let playlist of this._userConfig.playlists) {
+        if (playlist.name === playlistName) {
+          playlist.files.splice(fileIndex, 1);
+          break;
+        }
+      }
+      this.saveConfig();
+    }
   }
 
   addPlaylist(playlist: Playlist) {
-    this._userConfig?.playlists.push(playlist);
-    this.saveConfig();
+    if (this._userConfig) {
+      this._userConfig.playlists.push(playlist);
+      this.saveConfig();
+    }
   }
 
   deletePlaylistAtIndex(index: number) {
-    this._userConfig?.playlists.splice(index, 1);
-    this.saveConfig();
+    if (this._userConfig) {
+      this._userConfig.playlists.splice(index, 1);
+      this.saveConfig();
+    }
   }
 }

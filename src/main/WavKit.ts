@@ -117,7 +117,7 @@ class WavKit {
     playlists?.forEach((playlist, index) => {
       for (let i = 0; i < playlist.files.length; i++) {
         if (!fs.existsSync(playlist.files[i])) {
-          this._configManager.removeFileFromPlaylist(index, i);
+          this._configManager.removeFileFromPlaylistAtIndex(i, index);
         }
       }
     });
@@ -151,6 +151,22 @@ class WavKit {
   ) {
     const { index } = args;
     this._configManager.deletePlaylistAtIndex(index);
+  }
+
+  onConfigAddFileToPlaylist(
+    _event: ElectronEvent,
+    args: { filename: string; playlist: string }
+  ) {
+    const { filename, playlist } = args;
+    this._configManager.addFileToPlaylist(filename, playlist);
+  }
+
+  onConfigRemoveFileFromPlaylist(
+    _event: ElectronEvent,
+    args: { fileIndex: number; playlist: string }
+  ) {
+    const { fileIndex, playlist } = args;
+    this._configManager.removeFileFromPlaylist(fileIndex, playlist);
   }
 }
 

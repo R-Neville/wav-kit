@@ -56,6 +56,22 @@ class PlaylistsView extends HTMLElement {
     }
   }
 
+  replaceItemAtIndex(index: number, playlist: Playlist) {
+    if (this._items.length === 0) {
+      this._noPlaylists.remove();
+    }
+
+    this._contentWrapper.children[index].remove();
+
+    const item = new PlaylistsViewItem(playlist);
+    this._items.splice(index, 0, item);
+    if (this.children[index]) {
+      this._contentWrapper.insertBefore(item, this._contentWrapper.children[index]);
+    } else {
+      this._contentWrapper.appendChild(item);
+    }
+  }
+
   private buildContentWrapper() {
     const wrapper = document.createElement("div");
     applyStyles(wrapper, {

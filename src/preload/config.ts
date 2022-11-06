@@ -31,3 +31,11 @@ export function createPlaylist(name: string) {
 export function deletePlaylistAtIndex(index: number) {
   ipcRenderer.send("config:delete-playlist-at-index", { index });
 }
+
+export function addFileToPlaylist(filename: string, playlist: string) {
+  ipcRenderer.send("config:add-file-to-playlist", { filename, playlist });
+}
+
+export function removeFileFromPlaylist(fileIndex: number, playlist: string) {
+  ipcRenderer.send("config:remove-file-from-playlist", { fileIndex, playlist });
+}

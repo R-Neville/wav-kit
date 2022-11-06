@@ -96,6 +96,10 @@ class PlayerView extends MainPanelView {
       "show-playlist-view",
       this.onShowPlaylistView as EventListener
     );
+    this.addEventListener(
+      "playlist-updated",
+      this.onPlaylistUpdated as EventListener
+    );
   }
 
   connectedCallback() {
@@ -387,6 +391,8 @@ class PlayerView extends MainPanelView {
       this._playlists.splice(index, 1);
       window.api.config.deletePlaylistAtIndex(index);
       this._playlistsView.removeItemAtIndex(index);
+      this._playlistView?.remove();
+      this._playlistView = null;
     }
   }
 
@@ -397,9 +403,22 @@ class PlayerView extends MainPanelView {
 
   private onShowPlaylistView(event: CustomEvent) {
     const { playlist } = event.detail;
-    this._playlistView = new PlaylistView(playlist);
+    if (!this._playlistView || this._playlistView.name !== playlist.name) {
+      this._playlistView = new PlaylistView(playlist);
+    }
     this._tabView.remove();
     this._body.insertBefore(this._playlistView, this._audioPlayer);
+  }
+
+  private onPlaylistUpdated(event: CustomEvent) {
+    const { playlist } = event.detail;
+    for (let i = 0; i < this._playlists.length; i++) {
+      if (this._playlists[i].name === playlist.name) {
+        Object.assign(this._playlists[i].files, playlist.files);
+        this._playlistsView.replaceItemAtIndex(i, playlist);
+        break;
+      }
+    }
   }
 }
 

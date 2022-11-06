@@ -6,7 +6,6 @@ import PlaylistFileView from "./PlaylistFileView";
 class PlaylistView extends HTMLElement {
   private _playlist: Playlist;
   private _header: HTMLDivElement;
-  private _contentWrapper: HTMLDivElement;
   private _fileView: PlaylistFileView;
 
   constructor(playlist: Playlist) {
@@ -15,11 +14,9 @@ class PlaylistView extends HTMLElement {
     this._playlist = playlist;
 
     this._header = this.buildHeader(this._playlist.name);
-    this._contentWrapper = this.buildContentWrapper();
     this._fileView = new PlaylistFileView();
 
     this.appendChild(this._header);
-    // this.appendChild(this._contentWrapper);
     this.appendChild(this._fileView);
 
     applyStyles(this, {
@@ -29,12 +26,26 @@ class PlaylistView extends HTMLElement {
       margin: "1em",
     } as CSSStyleDeclaration);
 
+    this.addEventListener(
+      "add-file-to-playlist-requested",
+      this.onAddFileToPlaylistRequested as EventListener
+    );
+
+    this.addEventListener(
+      "file-removed-from-playlist",
+      this.onFileRemovedFromPlaylist as EventListener
+    );
+
     this._playlist.files.forEach(async (filename) => {
       const stats = await window.api.file.statsFromPath(filename);
       if (stats) {
         this._fileView.addItem(stats);
       }
     });
+  }
+
+  get name() {
+    return this._playlist.name;
   }
 
   private buildHeader(name: string) {
@@ -70,12 +81,36 @@ class PlaylistView extends HTMLElement {
     return header;
   }
 
-  private buildContentWrapper() {
-    const contentWrapper = document.createElement("div");
-    applyStyles(contentWrapper, {
-      ...universalStyles,
-    } as CSSStyleDeclaration);
-    return contentWrapper;
+  private async onAddFileToPlaylistRequested() {
+    const filenames = await window.api.dialog.showOpenFilesDialog();
+    if (filenames) {
+      filenames.forEach(async (filename) => {
+        if (!this._playlist.files.includes(filename)) {
+          await this.addFileToPlaylist(filename);
+        }
+      });
+    }
+  }
+
+  private async addFileToPlaylist(filename: string) {
+    const stats = await window.api.file.statsFromPath(filename);
+    if (stats) {
+      window.api.config.addFileToPlaylist(filename, this._playlist.name);
+      this._fileView.addItem(stats);
+    }
+  }
+
+  private onFileRemovedFromPlaylist(event: CustomEvent) {
+    const { index } = event.detail;
+    this._playlist.files.splice(index, 1);
+    window.api.config.removeFileFromPlaylist(index, this._playlist.name);
+    const customEvent = new CustomEvent("playlist-updated", {
+      bubbles: true,
+      detail: {
+        playlist: this._playlist,
+      },
+    });
+    this.dispatchEvent(customEvent);
   }
 }
 

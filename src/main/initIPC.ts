@@ -21,5 +21,13 @@ export default function initIPC(app: WavKit) {
     app.onConfigValidatePlaylistName.bind(app)
   );
   ipcMain.on("config:create-playlist", app.onConfigCreatePlaylist.bind(app));
-  ipcMain.on("config:delete-playlist-at-index", app.onConfigDeletePlaylistAtIndex.bind(app));
+  ipcMain.on(
+    "config:delete-playlist-at-index",
+    app.onConfigDeletePlaylistAtIndex.bind(app)
+  );
+  ipcMain.on(
+    "config:add-file-to-playlist",
+    app.onConfigAddFileToPlaylist.bind(app)
+  );
+  ipcMain.on("config:remove-file-from-playlist", app.onConfigRemoveFileFromPlaylist.bind(app));
 }

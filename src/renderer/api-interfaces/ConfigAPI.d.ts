@@ -9,4 +9,6 @@ export default interface ConfigAPI {
   validatePlaylistName: (name: string) => Promise<boolean>;
   createPlaylist: (name: string) => void;
   deletePlaylistAtIndex: (index: number) => void;
+  addFileToPlaylist: (filename: string, playlist: string) => void;
+  removeFileFromPlaylist: (fileIndex: number, playlist: string) => void;
 }
