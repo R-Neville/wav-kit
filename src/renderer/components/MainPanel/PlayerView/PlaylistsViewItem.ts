@@ -1,45 +1,34 @@
-import FileStats from "../../../../shared/FileStats";
+import Playlist from "../../../../shared/Playlist";
 import { applyStyles } from "../../../helpers";
-import { close } from "../../../icons";
 import universalStyles from "../../../universalStyles";
 import Icon from "../../shared/Icon";
+import { close } from "../../../icons";
 
-class FileListItem extends HTMLElement {
-  protected _path: string;
-  protected _nameLabel: HTMLLabelElement;
-  protected _sizeLabel: HTMLLabelElement;
-  protected _closeButton: HTMLButtonElement;
+class PlaylistsViewItem extends HTMLElement {
+  private _playlist: Playlist;
+  private _nameLabel: HTMLLabelElement;
+  private _songCountLabel: HTMLLabelElement;
+  private _deleteButton: HTMLButtonElement;
 
-  constructor(stats: FileStats) {
+  constructor(playlist: Playlist) {
     super();
-    
-    this._path = stats.path;
-    this._nameLabel = this.buildLabel(window.api.path.basename(this._path));
-    this._nameLabel.style.marginRight = "auto";
-    this._nameLabel.title = this._path;
-    this._sizeLabel = this.buildLabel(`${stats.mb}MB`);
-    this._closeButton = this.buildCloseButton();
+
+    this._playlist = playlist;
+    this._nameLabel = this.buildNameLabel(this._playlist.name);
+    this._songCountLabel = this.buildSongCountLabel(
+      this._playlist.files.length
+    );
+    this._deleteButton = this.buildDeleteButton();
 
     this.appendChild(this._nameLabel);
-    this.appendChild(this._sizeLabel);
-    this.appendChild(this._closeButton);
+    this.appendChild(this._songCountLabel);
+    this.appendChild(this._deleteButton);
 
     applyStyles(this, {
       ...universalStyles,
       display: "flex",
       alignItems: "center",
-      overflow: "hidden",
       padding: "10px 20px",
-      backgroundColor: window.theme.bgHighlight,
-      whiteSpace: "nowrap",
-      textOverflow: "ellipsis",
-      cursor: "pointer",
-    } as CSSStyleDeclaration);
-
-    applyStyles(this._nameLabel, {
-      overflow: "hidden",
-      whiteSpace: "nowrap",
-      textOverflow: "ellipsis",
     } as CSSStyleDeclaration);
 
     this.addEventListener("dblclick", this.onDblClick);
@@ -47,22 +36,32 @@ class FileListItem extends HTMLElement {
     this.addEventListener("mouseleave", this.onMouseLeave);
   }
 
-  get path() {
-    return this._path;
-  }
-
-  private buildLabel(text: string) {
+  private buildNameLabel(name: string) {
     const label = document.createElement("label");
-    label.textContent = text;
+    label.textContent = name;
     applyStyles(label, {
       ...universalStyles,
-      fontSize: "14px",
+      overflow: "hidden",
+      marginRight: "auto",
+      wordWrap: "nowrap",
+      textOverflow: "ellipsis",
       color: window.theme.fgHighlight,
     } as CSSStyleDeclaration);
     return label;
   }
 
-  private buildCloseButton() {
+  private buildSongCountLabel(count: number) {
+    const label = document.createElement("label");
+    const s = count === 1 ? "" : "s";
+    label.textContent = `${count} file${s}`;
+    applyStyles(label, {
+      ...universalStyles,
+      color: window.theme.fgHighlight,
+    } as CSSStyleDeclaration);
+    return label;
+  }
+
+  private buildDeleteButton() {
     const button = document.createElement("button");
     const icon = new Icon(close(), "100%", true);
     icon.setColor(window.theme.fgHighlight);
@@ -82,8 +81,11 @@ class FileListItem extends HTMLElement {
       cursor: "pointer",
     } as CSSStyleDeclaration);
     button.addEventListener("click", () => {
-      const customEvent = new CustomEvent("item-close-button-clicked", {
+      const customEvent = new CustomEvent("item-delete-button-clicked", {
         bubbles: true,
+        detail: {
+          name: this._playlist.name,
+        },
       });
       this.dispatchEvent(customEvent);
     });
@@ -97,8 +99,11 @@ class FileListItem extends HTMLElement {
   }
 
   private onDblClick() {
-    const customEvent = new CustomEvent("item-dbl-clicked", {
+    const customEvent = new CustomEvent("show-playlist-view", {
       bubbles: true,
+      detail: {
+        playlist: this._playlist,
+      },
     });
     this.dispatchEvent(customEvent);
   }
@@ -112,4 +117,6 @@ class FileListItem extends HTMLElement {
   }
 }
 
-export default FileListItem;
+customElements.define("playlists-view-item", PlaylistsViewItem);
+
+export default PlaylistsViewItem;

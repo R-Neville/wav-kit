@@ -5,6 +5,7 @@ import Config from "./Config";
 import { isEmpty, deepCopy } from "../../shared/utils";
 import validateConfig from "./validateConfig";
 import showErrorMessage from "../showErrorMessage";
+import Playlist from "../../shared/Playlist";
 
 const userDataPath = app.getPath("userData");
 
@@ -40,6 +41,10 @@ export default class ConfigManager {
     return this._userConfig?.importedFiles;
   }
 
+  get playlists() {
+    return this._userConfig?.playlists;
+  }
+
   restoreDefaultConfig() {
     this._userConfig = deepCopy(this._defaultConfig) as Config;
   }
@@ -60,18 +65,67 @@ export default class ConfigManager {
   }
 
   addImportedFile(path: string) {
-    this._userConfig?.importedFiles.push(path);
-    this.saveConfig();
+    if (this._userConfig) {
+      this._userConfig.importedFiles.push(path);
+      this.saveConfig();
+    }
   }
 
   removeImportedFileAtIndex(index: number) {
-    this._userConfig?.importedFiles.splice(index, 1);
-    this.saveConfig();
+    if (this._userConfig) {
+      this._userConfig.importedFiles.splice(index, 1);
+      this.saveConfig();
+    }
   }
 
   resetImportedFiles() {
     if (this._userConfig) {
       this._userConfig.importedFiles = []
+      this.saveConfig();
+    }
+  }
+
+  addFileToPlaylist(filename: string, playlist: string) {
+    if (this._userConfig) {
+      for (let p of this._userConfig.playlists) {
+        if (p.name === playlist) {
+          p.files.push(filename);
+          break;
+        }
+      }
+      this.saveConfig();
+    }
+  }
+
+  removeFileFromPlaylistAtIndex(fileIndex: number, playlistIndex: number) {
+    if (this._userConfig) {
+      this._userConfig.playlists[playlistIndex].files.splice(fileIndex, 1);
+      this.saveConfig();
+    }
+  }
+
+  removeFileFromPlaylist(fileIndex: number, playlistName: string) {
+    if (this._userConfig) {
+      for (let playlist of this._userConfig.playlists) {
+        if (playlist.name === playlistName) {
+          playlist.files.splice(fileIndex, 1);
+          break;
+        }
+      }
+      this.saveConfig();
+    }
+  }
+
+  addPlaylist(playlist: Playlist) {
+    if (this._userConfig) {
+      this._userConfig.playlists.push(playlist);
+      this.saveConfig();
+    }
+  }
+
+  deletePlaylistAtIndex(index: number) {
+    if (this._userConfig) {
+      this._userConfig.playlists.splice(index, 1);
       this.saveConfig();
     }
   }

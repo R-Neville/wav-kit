@@ -6,6 +6,7 @@ import FSObserver from "./FSObserver";
 import initDialogs from "./initDialogs";
 import ConfigManager from "./config/ConfigManager";
 import defaultConfig from "./config/defaultConfig";
+import Playlist from "../shared/Playlist";
 
 const fsPromises = fs.promises;
 
@@ -88,6 +89,12 @@ class WavKit {
   }
 
   async onConfigImportedFiles() {
+    const filenames = this._configManager.importedFiles;
+    filenames?.forEach((filename, index) => {
+      if (!fs.existsSync(filename)) {
+        this._configManager.removeImportedFileAtIndex(index);
+      }
+    });
     return this._configManager.importedFiles;
   }
 
@@ -103,6 +110,63 @@ class WavKit {
 
   onConfigRemoveAllImportedFiles() {
     this._configManager.resetImportedFiles();
+  }
+
+  async onConfigPlaylists() {
+    const playlists = this._configManager.playlists;
+    playlists?.forEach((playlist, index) => {
+      for (let i = 0; i < playlist.files.length; i++) {
+        if (!fs.existsSync(playlist.files[i])) {
+          this._configManager.removeFileFromPlaylistAtIndex(i, index);
+        }
+      }
+    });
+    return this._configManager.playlists;
+  }
+
+  async onConfigValidatePlaylistName(
+    _event: ElectronEvent,
+    args: { name: string }
+  ) {
+    const { name } = args;
+    const playlists = this._configManager.playlists;
+    if (playlists) {
+      return playlists.filter((p) => p.name === name).length === 0;
+    }
+    return false;
+  }
+
+  onConfigCreatePlaylist(_event: ElectronEvent, args: { name: string }) {
+    const { name } = args;
+    const playlist = {
+      name,
+      files: [],
+    } as Playlist;
+    this._configManager.addPlaylist(playlist);
+  }
+
+  onConfigDeletePlaylistAtIndex(
+    _event: ElectronEvent,
+    args: { index: number }
+  ) {
+    const { index } = args;
+    this._configManager.deletePlaylistAtIndex(index);
+  }
+
+  onConfigAddFileToPlaylist(
+    _event: ElectronEvent,
+    args: { filename: string; playlist: string }
+  ) {
+    const { filename, playlist } = args;
+    this._configManager.addFileToPlaylist(filename, playlist);
+  }
+
+  onConfigRemoveFileFromPlaylist(
+    _event: ElectronEvent,
+    args: { fileIndex: number; playlist: string }
+  ) {
+    const { fileIndex, playlist } = args;
+    this._configManager.removeFileFromPlaylist(fileIndex, playlist);
   }
 }
 
