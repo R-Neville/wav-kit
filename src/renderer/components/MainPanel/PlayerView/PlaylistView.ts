@@ -51,29 +51,64 @@ class PlaylistView extends HTMLElement {
     return this._playlist.name;
   }
 
+  update(playlist: Playlist) {
+    this._playlist = playlist;
+    this._fileView.clear();
+    this._playlist.files.forEach(async (filename) => {
+      const stats = await window.api.file.statsFromPath(filename);
+      if (stats) {
+        this._fileView.addItem(stats);
+      }
+    });
+  }
+
   private buildHeader(name: string) {
     const header = document.createElement("div");
-    header.textContent = name;
     applyStyles(header, {
       ...universalStyles,
       display: "flex",
-      justifyContent: "space-between",
       alignItems: "center",
       padding: "0.5em 1em",
       backgroundColor: window.theme.fgHighlight + "22",
       fontSize: "1em",
       color: window.theme.fgPrimary,
     } as CSSStyleDeclaration);
-    const backButton = document.createElement("button");
-    backButton.textContent = "Back";
-    applyStyles(backButton, {
+
+    const title = document.createElement("h2");
+    title.textContent = name;
+    applyStyles(title, {
       ...universalStyles,
+      padding: "0",
+      margin: "0",
+      marginRight: "auto",
+    } as CSSStyleDeclaration);
+    header.appendChild(title);
+
+    const buttonStyles = {
+      ...universalStyles,
+      padding: "0.5em 1em",
       border: "none",
       borderRadius: "3px",
+      margin: "4px",
       backgroundColor: window.theme.bgAccent,
       color: window.theme.fgAccent,
       cursor: "pointer",
-    } as CSSStyleDeclaration);
+    };
+
+    const addButton = document.createElement("button");
+    addButton.textContent = "Add";
+    applyStyles(addButton, buttonStyles as CSSStyleDeclaration);
+    addButton.addEventListener("click", () => {
+      const customEvent = new CustomEvent("add-file-to-playlist-requested", {
+        bubbles: true,
+      });
+      this.dispatchEvent(customEvent);
+    });
+    header.appendChild(addButton);
+
+    const backButton = document.createElement("button");
+    backButton.textContent = "Back";
+    applyStyles(backButton, buttonStyles as CSSStyleDeclaration);
     backButton.addEventListener("click", () => {
       const customEvent = new CustomEvent("show-tab-view", {
         bubbles: true,
@@ -81,6 +116,7 @@ class PlaylistView extends HTMLElement {
       this.dispatchEvent(customEvent);
     });
     header.appendChild(backButton);
+
     return header;
   }
 

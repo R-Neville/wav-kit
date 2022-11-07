@@ -64,11 +64,6 @@ class PlaylistFileView extends HTMLElement {
       item.remove();
     });
     this._items = [];
-    this._contentWrapper.appendChild(this._noFiles);
-    const customEvent = new CustomEvent("all-files-cleared", {
-      bubbles: true,
-    });
-    this.dispatchEvent(customEvent);
   }
 
   private buildContentWrapper() {

@@ -108,6 +108,10 @@ class PlayerView extends MainPanelView {
       "play-file-from-playlist-requested",
       this.onPlayFileFromPlaylistRequested as EventListener
     );
+    this.addEventListener(
+      "add-file-to-playlist",
+      this.onAddFileToPlaylist as EventListener
+    );
   }
 
   connectedCallback() {
@@ -250,6 +254,10 @@ class PlayerView extends MainPanelView {
             });
             modal.addAction("Confirm", () => {
               const value = modal.inputValue;
+              if (value.length === 0) {
+                modal.lock();
+                return;
+              }
               window.api.config.createPlaylist(value);
               const customEvent = new CustomEvent("new-playlist-created", {
                 bubbles: true,
@@ -394,7 +402,7 @@ class PlayerView extends MainPanelView {
         this._playlist = null;
       }
     }
-    
+
     setTimeout(() => {
       this._audioPlayer.clear();
     });
@@ -442,6 +450,8 @@ class PlayerView extends MainPanelView {
     const { playlist } = event.detail;
     if (!this._playlistView || this._playlistView.name !== playlist.name) {
       this._playlistView = new PlaylistView(playlist);
+    } else {
+      this._playlistView.update(playlist);
     }
     this._tabView.remove();
     this._body.insertBefore(this._playlistView, this._audioPlayer);
@@ -457,6 +467,32 @@ class PlayerView extends MainPanelView {
         break;
       }
     }
+  }
+
+  private onAddFileToPlaylist(event: CustomEvent) {
+    event.stopPropagation();
+    const { index } = event.detail;
+    const file = this._files[index].path;
+    const playlistNames = this._playlists.map((p) => p.name);
+    const modal = new Modal("Select the playlist:");
+    modal.addSelector(playlistNames);
+    modal.addAction("Cancel", () => {
+      modal.destroy();
+    });
+    modal.addAction("Confirm", () => {
+      if (modal.valid) {
+        const playlistName = modal.selection;
+        const playlistFound = this._playlists.find((p) => p.name === playlistName);
+        if (playlistFound) {
+          playlistFound.files.push(file);
+          const playlistIndex = this._playlists.indexOf(playlistFound);
+          this._playlistsView.replaceItemAtIndex(playlistIndex, playlistFound);
+          window.api.config.addFileToPlaylist(file, playlistFound.name);
+        }
+        modal.destroy();
+      }
+    });
+    document.body.appendChild(modal);
   }
 }
 

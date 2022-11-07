@@ -94,6 +94,7 @@ class PlaylistsView extends HTMLElement {
       padding: "1em",
       color: window.theme.fgHighlight,
     } as CSSStyleDeclaration);
+
     const button = document.createElement("button");
     button.textContent = "Create One";
     applyStyles(button, {
@@ -108,6 +109,7 @@ class PlaylistsView extends HTMLElement {
       color: window.theme.fgAccent,
       cursor: "pointer",
     } as CSSStyleDeclaration);
+
     button.addEventListener("click", () => {
       const modal = new Modal("Enter a name for the playlist:");
       const onInput = async () => {
@@ -129,6 +131,10 @@ class PlaylistsView extends HTMLElement {
       });
       modal.addAction("Confirm", () => {
         const value = modal.inputValue;
+        if (value.length === 0) {
+          modal.lock();
+          return;
+        }
         window.api.config.createPlaylist(value);
         const customEvent = new CustomEvent("new-playlist-created", {
           bubbles: true,
@@ -142,6 +148,7 @@ class PlaylistsView extends HTMLElement {
       document.body.appendChild(modal);
     });
     noPlaylists.appendChild(button);
+    
     return noPlaylists;
   }
 

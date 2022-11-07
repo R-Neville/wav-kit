@@ -43,29 +43,17 @@ class Selector extends HTMLElement {
       color: window.theme.bgAccent,
       cursor: "pointer",
     });
-    el.addEventListener("mouseenter", () => {
-      if (!el.classList.contains("selected")) {
-        el.style.backgroundColor = window.theme.fgAccent;
-        el.style.color = window.theme.bgAccent;
-      }
-    });
-    el.addEventListener("mouseleave", () => {
-      if (!el.classList.contains("selected")) {
-        el.style.backgroundColor = window.theme.bgAccent;
-        el.style.color = window.theme.fgAccent;
-      }
-    });
     el.addEventListener("click", () => {
       this._options.forEach((option) => {
         if (option.classList.contains("selected")) {
           option.classList.remove("selected");
-          option.style.backgroundColor = window.theme.bgAccent;
-          option.style.color = window.theme.fgAccent;
+          option.style.backgroundColor = window.theme.fgAccent;
+          option.style.color = window.theme.bgAccent;
         }
       });
       el.classList.add("selected");
-      el.style.backgroundColor = window.theme.fgAccent;
-      el.style.color = window.theme.bgAccent;
+      el.style.backgroundColor = window.theme.bgAccent;
+      el.style.color = window.theme.fgAccent;
       const customEvent = new CustomEvent("selection-changed", {
         bubbles: true,
         detail: {
