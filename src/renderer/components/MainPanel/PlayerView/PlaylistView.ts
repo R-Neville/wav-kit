@@ -99,7 +99,15 @@ class PlaylistView extends HTMLElement {
     const stats = await window.api.file.statsFromPath(filename);
     if (stats) {
       window.api.config.addFileToPlaylist(filename, this._playlist.name);
+      this._playlist.files.push(filename);
       this._fileView.addItem(stats);
+      const customEvent = new CustomEvent("playlist-updated", {
+        bubbles: true,
+        detail: {
+          playlist: this._playlist,
+        },
+      });
+      this.dispatchEvent(customEvent);
     }
   }
 
