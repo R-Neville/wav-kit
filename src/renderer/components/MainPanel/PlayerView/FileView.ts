@@ -54,6 +54,15 @@ class FileView extends HTMLElement {
         });
         this.dispatchEvent(customEvent);
       });
+      menu.addOption("Add To Playlist", () => {
+        const customEvent = new CustomEvent("add-file-to-playlist", {
+          bubbles: true,
+          detail: {
+            index: this._items.indexOf(item),
+          }
+        });
+        this.dispatchEvent(customEvent);
+      });
       document.body.appendChild(menu);
       menu.show(event.pageX, event.pageY);
     });

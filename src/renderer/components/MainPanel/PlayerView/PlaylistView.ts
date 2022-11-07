@@ -51,6 +51,17 @@ class PlaylistView extends HTMLElement {
     return this._playlist.name;
   }
 
+  update(playlist: Playlist) {
+    this._playlist = playlist;
+    this._fileView.clear();
+    this._playlist.files.forEach(async (filename) => {
+      const stats = await window.api.file.statsFromPath(filename);
+      if (stats) {
+        this._fileView.addItem(stats);
+      }
+    });
+  }
+
   private buildHeader(name: string) {
     const header = document.createElement("div");
     applyStyles(header, {
