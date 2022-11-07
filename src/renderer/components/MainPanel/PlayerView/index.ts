@@ -254,6 +254,10 @@ class PlayerView extends MainPanelView {
             });
             modal.addAction("Confirm", () => {
               const value = modal.inputValue;
+              if (value.length === 0) {
+                modal.lock();
+                return;
+              }
               window.api.config.createPlaylist(value);
               const customEvent = new CustomEvent("new-playlist-created", {
                 bubbles: true,
