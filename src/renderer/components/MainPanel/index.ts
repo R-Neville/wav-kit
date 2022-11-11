@@ -5,13 +5,15 @@ import MainPanelView from "./MainPanelView";
 import PlayerView from "./PlayerView";
 import MenuBar from "./MenuBar";
 import Icon from "../shared/Icon";
-import { home, player } from "../../icons";
+import { editor, home, player } from "../../icons";
+import EditorView from "./EditorView";
 
 class MainPanel extends HTMLElement {
   private _menuBar: MenuBar;
   private _currentView: MainPanelView;
   private _home: HomeView;
   private _player: PlayerView;
+  private _editor: EditorView;
 
   constructor() {
     super();
@@ -19,6 +21,7 @@ class MainPanel extends HTMLElement {
     this._menuBar = this.buildMenuBar();
     this._home = new HomeView();
     this._player = new PlayerView();
+    this._editor = new EditorView();
 
     this._currentView = this._home;
 
@@ -38,6 +41,7 @@ class MainPanel extends HTMLElement {
 
     this.addEventListener("show-home", this.showHome);
     this.addEventListener("show-player", this.showPlayer);
+    this.addEventListener("show-editor", this.showEditor);
   }
 
   addFileToPlayerView(path: string) {
@@ -61,20 +65,40 @@ class MainPanel extends HTMLElement {
     const menuBar = new MenuBar();
     const homeIcon = new Icon(home(), "30px", true);
     homeIcon.setColor(window.theme.bgSecondary);
-    menuBar.addAction(homeIcon, () => {
-      const customEvent = new CustomEvent("show-home", {
-        bubbles: true,
-      });
-      this.dispatchEvent(customEvent);
-    }, true);
+    menuBar.addAction(
+      homeIcon,
+      () => {
+        const customEvent = new CustomEvent("show-home", {
+          bubbles: true,
+        });
+        this.dispatchEvent(customEvent);
+      },
+      true
+    );
     const playerIcon = new Icon(player(), "30px", true);
     playerIcon.setColor(window.theme.bgSecondary);
-    menuBar.addAction(playerIcon, () => {
-      const customEvent = new CustomEvent("show-player", {
-        bubbles: true,
-      });
-      this.dispatchEvent(customEvent);
-    }, false);
+    menuBar.addAction(
+      playerIcon,
+      () => {
+        const customEvent = new CustomEvent("show-player", {
+          bubbles: true,
+        });
+        this.dispatchEvent(customEvent);
+      },
+      false
+    );
+    const editorIcon = new Icon(editor(), "30px", true);
+    editorIcon.setColor(window.theme.bgSecondary);
+    menuBar.addAction(
+      editorIcon,
+      () => {
+        const customEvent = new CustomEvent("show-editor", {
+          bubbles: true,
+        });
+        this.dispatchEvent(customEvent);
+      },
+      false
+    );
     return menuBar;
   }
 
@@ -87,6 +111,12 @@ class MainPanel extends HTMLElement {
   private showPlayer() {
     this._currentView?.remove();
     this._currentView = this._player;
+    this.appendChild(this._currentView);
+  }
+
+  private showEditor() {
+    this._currentView?.remove();
+    this._currentView = this._editor;
     this.appendChild(this._currentView);
   }
 }

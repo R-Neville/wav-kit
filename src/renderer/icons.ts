@@ -147,7 +147,10 @@ const homePaths = [
   {
     attributes: [
       ...universalAttributes,
-      ["d", "M 50 5 L 95 50 L 95 95 L 65 95 L 65 50 L 35 50 L 35 95 L 5 95 L 5 50 L 50 5 Z"],
+      [
+        "d",
+        "M 50 5 L 95 50 L 95 95 L 65 95 L 65 50 L 35 50 L 35 95 L 5 95 L 5 50 L 50 5 Z",
+      ],
       ["class", "stroke fill"],
       ["stroke-width", "4"],
     ],
@@ -161,6 +164,31 @@ const playerPaths = [
       ["d", "M 15 15 L 85 50 L 15 85 L 15 15 Z"],
       ["class", "stroke fill"],
       ["stroke-width", "7"],
+    ],
+  },
+] as SVGAttributeObject[];
+
+const editorPaths = [
+  {
+    attributes: [
+      ...universalAttributes,
+      [
+        "d",
+        "m135.5 71.119c0.86058 2.3555 1.6557 4.7442 5.7727 5.4479l-25.423 26.939-10.15 4.973 4.3775-10.421z",
+      ],
+      ["class", "fill"],
+      ["transform", "translate(-105.7 -64.384)"],
+    ],
+  },
+  {
+    attributes: [
+      ...universalAttributes,
+      [
+        "d",
+        "m141.86 64.384-4.5399 4.8106c0.71212 3.1799 2.7167 4.9055 5.7727 5.4479l4.5399-4.8106c-0.72325-2.9581-2.4914-4.9225-5.7727-5.4479z",
+      ],
+      ["class", "fill"],
+      ["transform", "translate(-105.7 -64.384)"],
     ],
   },
 ] as SVGAttributeObject[];
@@ -206,7 +234,7 @@ const nextPaths = [
       ["d", "M 80 20 L 80 80"],
       ["class", "stroke"],
       ["stroke-width", "8"],
-    ]
+    ],
   },
 ] as SVGAttributeObject[];
 
@@ -224,7 +252,7 @@ const previousPaths = [
       ["d", "M 20 20 L 20 80"],
       ["class", "stroke"],
       ["stroke-width", "8"],
-    ]
+    ],
   },
 ] as SVGAttributeObject[];
 
@@ -240,12 +268,15 @@ const repeatPaths = [
   {
     attributes: [
       ...universalAttributes,
-      ["d", "m84.378 103.67h21.134c2.7474 0 5.6132 2.7368 5.6132 5.7811v5.6452c0 2.8566-2.8658 5.7131-6.6868 5.7131h-20.061v-6.6653"],
+      [
+        "d",
+        "m84.378 103.67h21.134c2.7474 0 5.6132 2.7368 5.6132 5.7811v5.6452c0 2.8566-2.8658 5.7131-6.6868 5.7131h-20.061v-6.6653",
+      ],
       ["class", "stroke"],
       ["stroke-width", "4"],
       ["transform", "translate(-71.118 -100.41)"],
-    ]
-  }
+    ],
+  },
 ] as SVGAttributeObject[];
 
 const addPaths = [
@@ -321,6 +352,10 @@ export function home() {
 
 export function player() {
   return buildIcon(playerPaths, 100, 100);
+}
+
+export function editor() {
+  return buildIcon(editorPaths, 41.93, 44.095);
 }
 
 export function play() {
